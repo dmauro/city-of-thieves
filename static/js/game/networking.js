@@ -5,6 +5,7 @@
 
     _listen_for_other_players = function() {
         socket.on("player_move", function(data) {
+            console.log('player_move event');
             game.on_player_moved(data.id, data.x, data.y);
         });
         socket.on("player_steal", function(data) {
