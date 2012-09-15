@@ -25,6 +25,18 @@ class Lobby
             player.listen_for_start()
 
     add_player: (player) ->
+        # Make sure their nickname is available
+        i = 1
+        while true
+            name_available = true
+            for _player in @players
+                name_available = false if _player.nickname is player.nickname
+            if name_available
+                break
+            else
+                player.nickname = player.nickname + "_" + i
+            i++
+
         @broadcast 'player_added', player.get_stub();
         other_players = {}
         for other_player in @players
@@ -63,7 +75,7 @@ class Lobby
 
 class Player
     constructor: (@socket, @id = new Date().getTime()) ->
-        @nickname = "dave_" + @id
+        @nickname = "undefined_" + @id
         @socket.set 'id', @id
         @lobby = null
         _players[@id] = @
@@ -72,13 +84,15 @@ class Player
             @put_in_lobby data
         @socket.on 'disconnect', (data) =>
             @lobby.remove_player @
-        @socket.emit 'connection_established'
         @socket.on 'player_move', (data) =>
             data['id'] = @id
             @lobby.broadcast 'player_move', data, true, @id
         @socket.on 'player_steal', (data) =>
             data['id'] = @id
             @lobby.broadcast 'player_steal', data, true, @id
+        @socket.on 'set_nickname', (data) =>
+            @nickname = data.nickname
+        @socket.emit 'connection_established'
 
     put_in_lobby: (data) ->
         if data and data.id

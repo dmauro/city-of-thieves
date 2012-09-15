@@ -1,6 +1,7 @@
 (function() {
     var _player_count = 0;
     game.other_players = {};
+    game.nickname = "dmauro"
 
     _listen_for_other_players = function() {
         socket.on("player_move", function(data) {
@@ -31,6 +32,7 @@
     window.socket_connect = function() {
         window.socket = io.connect('http://127.0.0.1:1428');
         socket.on("connection_established", function() {
+            socket.emit("set_nickname", { nickname : game.nickname });
             var data = (game.seed) ? { id: game.seed } : null;
             console.log("We're gonna try to connect to lobby:", game.seed);
             socket.emit("join_lobby", data);
