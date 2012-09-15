@@ -1,7 +1,7 @@
 alea = require('../static/js/lib/alea.js').alea_random
 
-_lobbies = {}
-_players = {}
+module.exports.lobbies = _lobbies = {}
+module.exports.players = _players = {}
 _min_players = 1;
 _max_players = 2;
 
@@ -95,22 +95,12 @@ class Player
         @socket.emit 'connection_established'
 
     put_in_lobby: (data) ->
-        if data and data.id
-            for _id, _lobby of _lobbies
-                if _id is data.id.toString()
-                    lobby = _lobby 
-                    break
-            unless lobby
-                lobby = new Lobby data.id
+        for _id, _lobby of _lobbies
+            if _id is data.id.toString()
+                lobby = _lobby 
+                break
         unless lobby
-            # Try to find an open lobby for them
-            for _, _lobby of _lobbies
-                if not _lobby.full
-                    lobby = _lobby
-                    break
-        unless lobby
-            # Otherwise make a randome new one
-            lobby = new Lobby new Date().getTime()
+            lobby = new Lobby data.id
         lobby.add_player @
 
     listen_for_start: ->
