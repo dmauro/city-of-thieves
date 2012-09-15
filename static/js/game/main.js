@@ -1,11 +1,9 @@
 game = {
     tile_size: 64,
-    rows: [],
     height: 23,
     width: 14,
     state: {},
-    others: 0,
-    num_others: 50,
+    players: {},
 }
 
 game.tiled = function(x) {
@@ -17,8 +15,21 @@ game.end = function(x) {
     scenes.unbind();
 }
 
-game.on_server_message = function(data) {
-    console.log(data);
+game.place = function(sprite, x, y, z) {
+    var e = Crafty.e("2D, DOM, "+sprite).attr('z',x+1 * y+1);
+    game.iso.place(x, y, z || 0, e);
+    return e;
+}
+
+game.create_thief = function(x, y) {
+    return game.place('stone, Collision', x, y, 1).attr({z: 999});
+}
+game.on_player_moved = function(pid, x, y) {
+    if (game.players.pid === undefined) {
+        game.players.pid = game.create_thief(x, y);
+    } else {
+        game.players.pid.attr({x: x, y: y});
+    }
 }
 
 game.init_sprites = function() {
@@ -56,46 +67,6 @@ game.init_components = function() {
 };
 
 game.init_players = function() {
-    Crafty.c('Player1', {
-        Player1: function() {
-            //setup animations
-            this.requires("SpriteAnimation, Collision, Grid")
-                .animate("walk_right", 0, 5, 2)
-                .animate("walk_left", 0, 6, 2)
-                .animate("walk_down", 0, 4, 2)
-                .animate("walk_up", 0, 3, 2)
-                //change direction when a direction change event is received
-                .bind("NewDirection",
-                    function (direction) {
-                        if (direction.x || direction.y) {
-                            this.dx = direction.x;
-                            this.dy = direction.y;
-                        }
-
-                        if (direction.x > 0) {
-                            if (!this.isPlaying("walk_left"))
-                                this.stop().animate("walk_left", 10, -1);
-                        }
-                        if (direction.x < 0) {
-                            if (!this.isPlaying("walk_right"))
-                                this.stop().animate("walk_right", 10, -1);
-                        }
-                        if (direction.y > 0) {
-                            if (!this.isPlaying("walk_up"))
-                                this.stop().animate("walk_up", 10, -1);
-                        }
-                        if (direction.y < 0) {
-                            if (!this.isPlaying("walk_down"))
-                                this.stop().animate("walk_down", 10, -1);
-                        }
-                        if(!direction.x && !direction.y) {
-                            this.stop();
-                        }
-                })
-            return this;
-        }
-    });
-
     Crafty.c("LeftControls", {
         init: function() {
             this.requires('Multiway');
@@ -108,7 +79,6 @@ game.init_players = function() {
     });
     //create our player entity with some premade components
     var player = Crafty.e("2D, DOM, stone, LeftControls, Bounded")
-            //.attr({ x: game.tile_size*12, y: game.tile_size * 3, z: 2 })
             .leftControls(1)
             .Bounded()
             .attr({z: 999});
@@ -120,59 +90,14 @@ game.generate_world = function() {
     game.iso = Crafty.isometric.size(game.tile_size);
 	for(var i = game.width-1; i >= 0; i--) {
 		for(var y = 0; y < game.height; y++) {
-            var place = function(sprite, x, y, z) {
-                var e = Crafty.e("2D, DOM, "+sprite).attr('z',i+1 * y+1);
-                game.iso.place(x, y, z || 0, e);
-                return e;
-            }
-
             if (!(i == game.width-1 && y % 2)) {
-                place('grass', i, y);
+                game.place('grass', i, y);
             }
             if (!game.random.range(0, 60)) {
-                var ai = place('stone, Collision', i, y, 1).attr({z: 999});
-                scenes.ais.push(ai);
+                scenes.ais.push(game.create_thief(i, y));
             }
-            /*if (y === 0 || (i === 0 && !(y % 2)) || ( i === game.width && y % 2)) {
-                place('stone', i, y, 1);
-            }*/ 
 		}
 	}
-}
-
-game.generate_row = function() {
-    var y = game.rows.length;
-    var ents = [];
-    for (var x = 0; x < game.width; x++) {
-        //place grass on all tiles
-        grassType = game.random.range(1, 4);
-        ents.push(Crafty.e("2D, DOM, grass" + grassType)
-            .attr({ x: x * game.tile_size, y: y * game.tile_size, z:1 }));
-        //create a fence of bushes
-        if (x === 0 || x === game.width-1 || y === 0 || y === game.height-1 || game.random.range(1,20) === 1) {
-            ents.push(Crafty.e("2D, DOM, solid, bush" + game.random.range(1, 2))
-                .attr({x: game.tiled(x), y: game.tiled(y), z: 2}));
-        } else if (game.others < game.num_others && y > 0 && !game.random.range(0,60)) {
-            game.others += 1;
-            var ent = Crafty.e("2D, DOM, player, Bounded").Bounded()
-                .attr({x: game.tiled(x), y: game.tiled(y), z: 2});
-            if (game.others === game.num_others) {
-                ent.last = true;
-            }
-            scenes.ais.push(ent);
-        }
-    }
-    game.rows.push(ents);
-    if (game.rows.length > game.height+1) {
-        var reap = (game.rows.length - game.height - 2);
-        for (var i = 0; i < game.rows[reap].length; i++) {
-            var ent = game.rows[reap][i];
-            if (ent.last) {
-                game.end();
-            }
-            game.rows[reap][i].destroy();
-        }
-    }
 }
 
 game.init = function() {
