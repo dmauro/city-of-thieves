@@ -70,7 +70,7 @@ game.init_players = function() {
     Crafty.c("LeftControls", {
         init: function() {
             this.requires('Multiway').bind('Moved', function(from) {
-                window.player_moved(this.x, this.y);
+                window.player_move(this.x, this.y);
             });
         },
         leftControls: function(speed) {
