@@ -35,8 +35,12 @@ scenes.init = function() {
                         $.each(scenes.ais, function(i, ai) {
                             px = ai.x;
                             py = ai.y;
-                            ai.x += game.random.range(-1, 1);
-                            ai.y += game.random.range(-1, 1);
+                            if (!game.random.range(0, 30)) {
+                                ai.dx = game.random.range(-1, 1);
+                                ai.dy = game.random.range(-1, 1);
+                            }
+                            ai.x += ai.dx || 0;
+                            ai.y += ai.dy || 0;
                             game.bound(ai, px, py);
                         });
                     }
