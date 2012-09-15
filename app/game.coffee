@@ -11,7 +11,6 @@ class Lobby
         @ready = false
         @full = false
         _lobbies[@id] = @
-        console.log "lobbies", _lobbies
 
     broadcast: (name, data, is_volatile=false, exclude=null) ->
         for player in @players
@@ -26,7 +25,10 @@ class Lobby
             player.listen_for_start()
 
     add_player: (player) ->
-        @broadcast 'player_added'
+        @broadcast 'player_added', player.get_stub();
+        other_players = {}
+        for other_player in @players
+            other_players[other_player.id] = other_player.get_stub()
         @players.push player
         player.lobby = @
         @full = @players.length >= _max_players
@@ -34,6 +36,7 @@ class Lobby
             id              : @id
             is_ready        : @ready
             player_count    : @players.length
+            other_players   : other_players
         }
         if @players.length >= _min_players and not @ready
             @ready = true
@@ -44,9 +47,7 @@ class Lobby
             player.listen_for_start()
 
     remove_player: (player) ->
-        @broadcast 'player_dropped', {
-            id : player.id
-        }
+        @broadcast 'player_dropped', player.get_stub()
         for i in [0...@players.length]
             if @players[i] is player
                 @players.splice i, 1
@@ -62,10 +63,12 @@ class Lobby
 
 class Player
     constructor: (@socket, @id = new Date().getTime()) ->
+        @nickname = "dave_" + @id
         @socket.set 'id', @id
+        @lobby = null
         _players[@id] = @
         # Listen for events
-        @socket.on 'lobby', (data) =>
+        @socket.on 'join_lobby', (data) =>
             @put_in_lobby data
         @socket.on 'disconnect', (data) =>
             @lobby.remove_player @
@@ -109,6 +112,12 @@ class Player
             other_players.push player.id
         @socket.emit "start_game", {
             other_players   : other_players
+        }
+
+    get_stub: ->
+        return {
+            id          : @id
+            nickname    : @nickname
         }
 
 module.exports.init = (io) ->
