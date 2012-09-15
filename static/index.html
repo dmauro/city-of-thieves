@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>	
+    <title>Percival Brown</title>
+	<script src="http://cdn.craftycomponents.com/crafty-release.js"></script>
+    <script src="http://code.jquery.com/jquery-1.8.0.min.js"></script>
+    <script src="js/lib/jquery.animate-colors-min.js"></script>
+    <script src="js/lib/alea.js"></script>
+    <script src="js/game/main.js"></script>
+    <script src="js/game/scenes.js"></script>
+    <style type="text/css">
+        div#container {
+            width: 400px;
+            margin: auto;
+            text-align: center;
+        }
+    </style>
+</head>
+<body style="zoom:150%">
+    <div id="container">
+        <div id="hud">
+            <!--Age: <span class="age">100</span>-->
+        </div>
+        <div id="cr-stage" style="height:400px;width:400px;background:#ccc">
+            <h1>What Time Is It?</h1>
+            <div>click to start</div>
+        </div>
+
+        <div class="controls">
+            <b><u>Controls</u></b><br/>
+            WASD: movement<br/>
+            Space: steal<br/>
+        </div>
+    </div>
+    <script>
+        $(function() {
+            $('#cr-stage').click(function() {
+                $('.controls')
+                    .css({'backgroundColor': '#5bb75b'})
+                    .animate({'backgroundColor': '#fff'}, 3000);
+                $(this).empty();
+                setTimeout(game.init, 3000);
+            }).click();
+        });
+    </script>
+</body>
+</html>
