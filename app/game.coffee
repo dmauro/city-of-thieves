@@ -13,9 +13,13 @@ class Lobby
         _lobbies[@id] = @
         console.log "lobbies", _lobbies
 
-    broadcast: (name, data) ->
+    broadcast: (name, data, is_volatile=false, exclude=null) ->
         for player in @players
-            player.socket.emit name, data
+            continue if exclude and player.id = exclude
+            if is_volatile
+                player.socket.volatile.emit name, data
+            else
+                player.socket.emit name, data
 
     listen_for_start: ->
         for player in @players
@@ -66,6 +70,12 @@ class Player
         @socket.on 'disconnect', (data) =>
             @lobby.remove_player @
         @socket.emit 'connection_established'
+        @socket.on 'player_move', (data) =>
+            data['id'] = @id
+            @lobby.broadcast 'player_move', data, true, @id
+        @socket.on 'player_steal', (data) =>
+            data['id'] = @id
+            @lobby.broadcast 'player_steal', data, true, @id
 
     put_in_lobby: (data) ->
         if data and data.id
