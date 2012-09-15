@@ -1,6 +1,8 @@
 # Requirements
 connect = require 'connect'
 express = require 'express'
+sio = require 'socket.io'
+game = require './game'
 
 # Global vars
 port = 1428
@@ -20,6 +22,9 @@ app.set 'view options', {layout: false}
 
 app.get "/", (req, res) ->
     res.render "index"
+
+io = sio.listen app
+game.init io
 
 app.listen port, ip
 console.log "Server is running at http://#{ip}:#{port}"

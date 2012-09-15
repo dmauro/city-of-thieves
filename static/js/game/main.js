@@ -21,9 +21,11 @@ game.on_server_message = function(data) {
     console.log(data);
 }
 
+/*
 game.init_random = function(seed) {
     game.random = window.alea_random(seed);
 }
+*/
 
 game.init_sprites = function() {
     Crafty.sprite(game.tile_size, "img/sprite.png", {
@@ -218,9 +220,13 @@ game.generate_row = function() {
 }
 
 game.init = function() {
+    game.seed = 12345;
+    socket_connect();
+}
+
+game.begin = function() {
     Crafty.init(400, 400);
 
-    game.init_random(1234);
     game.init_sprites();
     game.init_components();
     game.init_sounds();
