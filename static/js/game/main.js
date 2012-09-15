@@ -15,7 +15,6 @@ game.tiled = function(x) {
 game.end = function(x) {
     game.player.stop().disableControl();
     scenes.unbind();
-    //Crafty.viewport.zoom(2, game.player.x/2, game.player.y/2, 3000);
 }
 
 game.on_server_message = function(data) {
@@ -48,6 +47,24 @@ game.init_sounds = function() {
 game.init_scenes = function() {
     scenes.init();
 }
+
+game.bound = function(e, px, py) {
+    if (e.hit('solid')) {
+        e.attr({x: px, y: py});
+    }
+}
+
+game.init_components = function() {
+    Crafty.c('Bounded', {
+        Bounded: function() {
+            this.requires("Collision")
+                .bind('Moved', function(from) {
+                    game.bound(this, from.x, from.y);
+                });
+            return this;
+        },
+    });
+};
 
 game.init_players = function() {
     Crafty.c('Player1', {
@@ -85,11 +102,6 @@ game.init_players = function() {
                         if(!direction.x && !direction.y) {
                             this.stop();
                         }
-                })
-                .bind('Moved', function(from) {
-                    if(this.hit('solid')){
-                        this.attr({x: from.x, y:from.y});
-                    }
                 })
             return this;
         }
@@ -156,10 +168,11 @@ game.init_players = function() {
         },
     });
     //create our player entity with some premade components
-    var player = Crafty.e("2D, DOM, Player1, player, Shooter, LeftControls")
+    var player = Crafty.e("2D, DOM, Player1, player, Shooter, LeftControls, Bounded")
             .attr({ x: game.tile_size*12, y: game.tile_size * 3, z: 2 })
             .leftControls(1)
-            .Player1();
+            .Player1()
+            .Bounded();
     game.player = player;
 }
 
@@ -167,7 +180,6 @@ game.generate_world = function() {
     for (var i = 0; i < game.height+1; i++) {
         game.generate_row();
     }
-    Crafty.e("2D, DOM, solid, dead").attr({x:game.tiled(1), y:game.tiled(1), z:game.tiled(1)});
 }
 
 game.generate_row = function() {
@@ -184,12 +196,12 @@ game.generate_row = function() {
                 .attr({x: game.tiled(x), y: game.tiled(y), z: 2}));
         } else if (game.others < game.num_others && y > 0 && !game.random.range(0,60)) {
             game.others += 1;
-            var ent = Crafty.e("2D, DOM, solid, alive")
+            var ent = Crafty.e("2D, DOM, solid, alive, Bounded").Bounded()
                 .attr({x: game.tiled(x), y: game.tiled(y), z: 2});
             if (game.others === game.num_others) {
                 ent.last = true;
             }
-            ents.push(ent);
+            scenes.ais.push(ent);
         }
     }
     game.rows.push(ents);
@@ -210,6 +222,7 @@ game.init = function() {
 
     game.init_random(1234);
     game.init_sprites();
+    game.init_components();
     game.init_sounds();
     game.init_scenes();
 
