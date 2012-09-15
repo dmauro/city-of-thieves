@@ -26,18 +26,6 @@ game.init_sprites = function() {
 		grass: [0,0,1,1],
 		stone: [1,0,1,1]
 	});
-    Crafty.sprite(game.tile_size, "/img/sprite.png", {
-        grass1: [0, 0],
-        grass2: [1, 0],
-        grass3: [2, 0],
-        grass4: [0, 1],
-        dead: [2, 1],
-        alive: [2, 2],
-        bush1: [0, 2],
-        bush2: [1, 2],
-        player: [0, 4],
-        bullet: [1, 1],
-    });
 }
 
 game.init_sounds = function() {
@@ -52,6 +40,7 @@ game.bound = function(e, px, py) {
     if (e.hit('solid')) {
         e.attr({x: px, y: py});
     }
+    e.attr({z: e.y+100});
 }
 
 game.init_components = function() {
@@ -118,32 +107,35 @@ game.init_players = function() {
 
     });
     //create our player entity with some premade components
-    var player = Crafty.e("2D, DOM, Player1, player, LeftControls, Bounded")
-            .attr({ x: game.tile_size*12, y: game.tile_size * 3, z: 2 })
+    var player = Crafty.e("2D, DOM, stone, LeftControls, Bounded")
+            //.attr({ x: game.tile_size*12, y: game.tile_size * 3, z: 2 })
             .leftControls(1)
-            .Player1()
-            .Bounded();
+            .Bounded()
+            .attr({z: 999});
+    game.iso.place(5, 5, 1, player);
     game.player = player;
 }
 
 game.generate_world = function() {
-    //for (var i = 0; i < game.height+1; i++) {
-    //    game.generate_row();
-    //}
-    iso = Crafty.isometric.size(game.tile_size);
+    game.iso = Crafty.isometric.size(game.tile_size);
 	for(var i = game.width-1; i >= 0; i--) {
 		for(var y = 0; y < game.height; y++) {
             var place = function(sprite, x, y, z) {
-                var tile = Crafty.e("2D, DOM, "+sprite).attr('z',i+1 * y+1);
-                iso.place(x, y, z || 0, tile);
+                var e = Crafty.e("2D, DOM, "+sprite).attr('z',i+1 * y+1);
+                game.iso.place(x, y, z || 0, e);
+                return e;
             }
 
             if (!(i == game.width-1 && y % 2)) {
                 place('grass', i, y);
             }
-            if (y === 0 || (i === 0 && !(y % 2)) || ( i === game.width && y % 2)) {
-                //place('stone', i, y, 1);
-            } 
+            if (!game.random.range(0, 60)) {
+                var ai = place('stone, Collision', i, y, 1).attr({z: 999});
+                scenes.ais.push(ai);
+            }
+            /*if (y === 0 || (i === 0 && !(y % 2)) || ( i === game.width && y % 2)) {
+                place('stone', i, y, 1);
+            }*/ 
 		}
 	}
 }
