@@ -14,7 +14,7 @@ class Lobby
 
     broadcast: (name, data, is_volatile=false, exclude=null) ->
         for player in @players
-            continue if exclude and player.id = exclude
+            continue if exclude and player.id is exclude
             if is_volatile
                 player.socket.volatile.emit name, data
             else
