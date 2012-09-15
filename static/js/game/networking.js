@@ -62,14 +62,14 @@
     }
 
     window.player_move = function(x, y) {
-        socket.volatile.emit("player_move", {
+        socket.emit("player_move", {
             x : x,
             y : y
         });
     };
 
     window.player_steal = function(target) {
-        socket.volatile.emit("player_steal", {
+        socket.emit("player_steal", {
             target : target
         });
     };
