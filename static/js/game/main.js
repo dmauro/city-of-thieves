@@ -2,7 +2,7 @@ game = {
     tile_size: 16,
     rows: [],
     height: 25,
-    width: 25,
+    width: 40,
     state: {},
     others: 0,
     num_others: 50,
@@ -225,7 +225,7 @@ game.init = function() {
 }
 
 game.begin = function() {
-    Crafty.init(400, 400);
+    Crafty.init(game.tiled(game.width), game.tiled(game.height));
 
     game.init_sprites();
     game.init_components();
