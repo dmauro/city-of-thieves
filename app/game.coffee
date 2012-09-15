@@ -68,6 +68,8 @@ class Lobby
             @ready = false
             @broadcast 'unready'
         @full = @players.length >= _max_players
+        unless @players.length
+            delete _lobbies[@id]
 
     start_game: ->
         for player in @players
