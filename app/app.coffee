@@ -17,7 +17,6 @@ app.configure(->
 )
 app.set 'view engine', 'jade'
 app.set 'view options', {layout: false}
-compress.views_init app
 
 app.get "/", (req, res) ->
     res.render "index"
