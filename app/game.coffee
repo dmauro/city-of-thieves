@@ -5,6 +5,7 @@ _players = {}
 _min_players = 1;
 _max_players = 2;
 
+
 class Lobby
     constructor: (@id) ->
         @players = []
@@ -23,10 +24,9 @@ class Lobby
         @players.push player
         player.lobby = @
         @ready = @players.length >= _min_players
-        player.socket.emit 'added_to_lobby', {
-            id : @id
-        }
+        player.socket.emit 'added_to_lobby', { id : @id }
         if @ready
+            console.log "listening for start and broadcasting ready"
             @listen_for_start()
             @broadcast 'ready'
 
@@ -56,7 +56,8 @@ class Player
                     break
         unless lobby
             # Otherwise make one for them
-            lobby = new Lobby data.id
+            id = if data and data.id then data.id else new Date().getTime()
+            lobby = new Lobby id
         lobby.add_player @
 
     listen_for_start: ->

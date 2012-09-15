@@ -28,7 +28,7 @@ game.init_random = function(seed) {
 */
 
 game.init_sprites = function() {
-    Crafty.sprite(game.tile_size, "img/sprite.png", {
+    Crafty.sprite(game.tile_size, "/img/sprite.png", {
         grass1: [0, 0],
         grass2: [1, 0],
         grass3: [2, 0],
@@ -220,7 +220,6 @@ game.generate_row = function() {
 }
 
 game.init = function() {
-    game.seed = 12345;
     socket_connect();
 }
 

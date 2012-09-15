@@ -23,6 +23,9 @@ app.set 'view options', {layout: false}
 app.get "/", (req, res) ->
     res.render "index"
 
+app.get "/game/:id", (req, res) ->
+    res.render "index", { lobby_id : req.params.id }
+
 io = sio.listen app
 game.init io
 
