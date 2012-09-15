@@ -18,6 +18,10 @@ game.end = function(x) {
     //Crafty.viewport.zoom(2, game.player.x/2, game.player.y/2, 3000);
 }
 
+game.on_server_message = function(data) {
+    console.log(data);
+}
+
 game.init_random = function(seed) {
     game.random = window.alea_random(seed);
 }
