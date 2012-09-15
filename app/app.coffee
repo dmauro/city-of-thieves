@@ -3,7 +3,7 @@ connect = require 'connect'
 express = require 'express'
 
 # Global vars
-port = 8080
+port = 1428
 ip = "127.0.0.1"
 cwd = process.cwd()
 
@@ -12,7 +12,6 @@ app = express.createServer()
 app.configure(->
     app.use express.logger()
     app.use express.bodyParser()
-    app.use express.cookieParser()
     app.use app.router
     app.use express.static "#{cwd}/static"
 )
