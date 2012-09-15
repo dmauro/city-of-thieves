@@ -33,6 +33,7 @@
         window.socket = io.connect('http://127.0.0.1:1428');
         socket.on("connection_established", function() {
             var data = (game.seed) ? { id: game.seed } : null;
+            console.log("We're gonna try to connect to lobby:", game.seed);
             socket.emit("lobby", data);
             socket.on("added_to_lobby", function(data) {
                 _player_count = data.player_count;

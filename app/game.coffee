@@ -5,13 +5,13 @@ _players = {}
 _min_players = 1;
 _max_players = 2;
 
-
 class Lobby
     constructor: (@id) ->
         @players = []
         @ready = false
         @full = false
         _lobbies[@id] = @
+        console.log "lobbies", _lobbies
 
     broadcast: (name, data) ->
         for player in @players
@@ -68,21 +68,22 @@ class Player
         @socket.emit 'connection_established'
 
     put_in_lobby: (data) ->
-        if data
+        if data and data.id
             for _id, _lobby of _lobbies
-                if _id is data.id
+                if _id is data.id.toString()
                     lobby = _lobby 
                     break
+            unless lobby
+                lobby = new Lobby data.id
         unless lobby
-            # Try to find a lobby for them
+            # Try to find an open lobby for them
             for _, _lobby of _lobbies
                 if not _lobby.full
                     lobby = _lobby
                     break
         unless lobby
-            # Otherwise make one for them
-            id = if data and data.id then data.id else new Date().getTime()
-            lobby = new Lobby id
+            # Otherwise make a randome new one
+            lobby = new Lobby new Date().getTime()
         lobby.add_player @
 
     listen_for_start: ->
