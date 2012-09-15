@@ -1,8 +1,8 @@
 game = {
-    tile_size: 16,
+    tile_size: 64,
     rows: [],
-    height: 25,
-    width: 40,
+    height: 23,
+    width: 14,
     state: {},
     others: 0,
     num_others: 50,
@@ -22,7 +22,7 @@ game.on_server_message = function(data) {
 }
 
 game.init_sprites = function() {
-    Crafty.sprite(64, "/img/sprite-iso64.png", {
+    Crafty.sprite(game.tile_size, "/img/sprite-iso64.png", {
 		grass: [0,0,1,1],
 		stone: [1,0,1,1]
 	});
@@ -130,19 +130,19 @@ game.generate_world = function() {
     //for (var i = 0; i < game.height+1; i++) {
     //    game.generate_row();
     //}
-    iso = Crafty.isometric.size(64);
-    var z = 0;
-    var size = 5;
-	for(var i = size; i >= 0; i--) {
-		for(var y = 0; y < size; y++) {
+    iso = Crafty.isometric.size(game.tile_size);
+	for(var i = game.width-1; i >= 0; i--) {
+		for(var y = 0; y < game.height; y++) {
             var place = function(sprite, x, y, z) {
                 var tile = Crafty.e("2D, DOM, "+sprite).attr('z',i+1 * y+1);
                 iso.place(x, y, z || 0, tile);
             }
 
-            place('grass', i, y);
-            if (y === 0) {
-                place('stone', i, y, 1);
+            if (!(i == game.width-1 && y % 2)) {
+                place('grass', i, y);
+            }
+            if (y === 0 || (i === 0 && !(y % 2)) || ( i === game.width && y % 2)) {
+                //place('stone', i, y, 1);
             } 
 		}
 	}
@@ -188,7 +188,7 @@ game.init = function() {
 }
 
 game.begin = function() {
-    Crafty.init(game.tiled(game.width), game.tiled(game.height));
+    Crafty.init(game.tiled(game.width), game.tiled(game.height/4)+game.tile_size);
 
     game.init_sprites();
     game.init_components();
