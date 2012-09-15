@@ -21,13 +21,11 @@ game.on_server_message = function(data) {
     console.log(data);
 }
 
-/*
-game.init_random = function(seed) {
-    game.random = window.alea_random(seed);
-}
-*/
-
 game.init_sprites = function() {
+    Crafty.sprite(64, "/img/sprite-iso64.png", {
+		grass: [0,0,1,1],
+		stone: [1,0,1,1]
+	});
     Crafty.sprite(game.tile_size, "/img/sprite.png", {
         grass1: [0, 0],
         grass2: [1, 0],
@@ -119,58 +117,8 @@ game.init_players = function() {
         },
 
     });
-    Crafty.c("Shooter", {
-        init: function() {
-            this.shots = [];
-        },
-        shoot: function() {
-            //Crafty.audio.play("shoot");
-            var player = this;
-            var dx = this.dx;
-            var dy = this.dy
-            var shot = Crafty.e("2D, DOM, Collision, bullet").attr({x: this.x, y: this.y, z:3});
-
-            // Rewind the shot until it hits something or is OOB.
-            while (!shot.hit('solid') && shot.within(0, -Crafty.viewport.y, game.tiled(game.width), game.tiled(game.height))) {
-                shot.x -= dx;
-                shot.y -= dy;
-            }
-            var hit = shot.hit('dead');
-            var ent, ex, ey;
-            if (hit) {
-                ent = hit[0].obj;
-                ex = ent.x, ey = ent.y;
-                Crafty.e("2D, DOM, solid, alive").attr({x: ex, y: ey, z: 2});
-                ent.destroy();
-                var span = $('#hud .age');
-                span.text(parseInt(span.text())-1)
-                    .css({'backgroundColor': '#5bb75b'})
-                    .stop(true, true)
-                    .animate({'backgroundColor': '#fff'}, 3000);
-                //Crafty.audio.play("unshot");
-            }
-            shot.x -= dx * game.tile_size * 2;
-            shot.y -= dy * game.tile_size * 2;
-
-            this.shots.push(shot);
-            var px = player.x
-            var py = player.y
-            shot.bind("EnterFrame", function(e) {
-                if (e.frame) {
-                    for (var i=0; i < 8; i++) {
-                        shot.x += dx;
-                        shot.y += dy;
-                        if (shot.x == px && shot.y == py) {
-                            this.destroy();
-                        }
-                    }
-                }
-            });
-            return this;
-        },
-    });
     //create our player entity with some premade components
-    var player = Crafty.e("2D, DOM, Player1, player, Shooter, LeftControls, Bounded")
+    var player = Crafty.e("2D, DOM, Player1, player, LeftControls, Bounded")
             .attr({ x: game.tile_size*12, y: game.tile_size * 3, z: 2 })
             .leftControls(1)
             .Player1()
@@ -179,9 +127,25 @@ game.init_players = function() {
 }
 
 game.generate_world = function() {
-    for (var i = 0; i < game.height+1; i++) {
-        game.generate_row();
-    }
+    //for (var i = 0; i < game.height+1; i++) {
+    //    game.generate_row();
+    //}
+    iso = Crafty.isometric.size(64);
+    var z = 0;
+    var size = 5;
+	for(var i = size; i >= 0; i--) {
+		for(var y = 0; y < size; y++) {
+            var place = function(sprite, x, y, z) {
+                var tile = Crafty.e("2D, DOM, "+sprite).attr('z',i+1 * y+1);
+                iso.place(x, y, z || 0, tile);
+            }
+
+            place('grass', i, y);
+            if (y === 0) {
+                place('stone', i, y, 1);
+            } 
+		}
+	}
 }
 
 game.generate_row = function() {
