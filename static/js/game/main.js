@@ -25,10 +25,10 @@ game.create_thief = function(x, y) {
     return game.place('stone, Collision', x, y, 1).attr({z: 999});
 }
 game.on_player_moved = function(pid, x, y) {
-    if (game.players.pid === undefined) {
-        game.players.pid = game.create_thief(x, y);
+    if (game.players[pid] === undefined) {
+        game.players[pid] = game.create_thief(x, y);
     } else {
-        game.players.pid.attr({x: x, y: y});
+        game.players[pid].attr({x: x, y: y});
     }
 }
 
@@ -69,7 +69,9 @@ game.init_components = function() {
 game.init_players = function() {
     Crafty.c("LeftControls", {
         init: function() {
-            this.requires('Multiway');
+            this.requires('Multiway').bind('Moved', function(from) {
+                window.player_moved(this.x, this.y);
+            });
         },
         leftControls: function(speed) {
             this.multiway(speed, {W: -90, S: 90, D: 0, A: 180})
