@@ -39,7 +39,6 @@ game.init_sprites = function() {
 
 game.init_sounds = function() {
     //Crafty.audio.add("shoot", "sound/shoot.wav");
-    //Crafty.audio.add("unshot", "sound/unshot.wav");
 }
 
 game.init_scenes = function() {
@@ -164,6 +163,7 @@ game.generate_world = function() {
     for (var i = 0; i < game.height+1; i++) {
         game.generate_row();
     }
+    Crafty.e("2D, DOM, solid, dead").attr({x:game.tiled(1), y:game.tiled(1), z:game.tiled(1)});
 }
 
 game.generate_row = function() {
@@ -175,12 +175,12 @@ game.generate_row = function() {
         ents.push(Crafty.e("2D, DOM, grass" + grassType)
             .attr({ x: x * game.tile_size, y: y * game.tile_size, z:1 }));
         //create a fence of bushes
-        if (x === 0 || x === game.width-1 || y === 0 || game.random.range(1,20) === 1) {
+        if (x === 0 || x === game.width-1 || y === 0 || y === game.height-1 || game.random.range(1,20) === 1) {
             ents.push(Crafty.e("2D, DOM, solid, bush" + game.random.range(1, 2))
                 .attr({x: game.tiled(x), y: game.tiled(y), z: 2}));
-        } else if (game.others < game.num_others && y > 20 && !game.random.range(0,60)) {
+        } else if (game.others < game.num_others && y > 0 && !game.random.range(0,60)) {
             game.others += 1;
-            var ent = Crafty.e("2D, DOM, solid, dead")
+            var ent = Crafty.e("2D, DOM, solid, alive")
                 .attr({x: game.tiled(x), y: game.tiled(y), z: 2});
             if (game.others === game.num_others) {
                 ent.last = true;
