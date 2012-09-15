@@ -196,7 +196,7 @@ game.generate_row = function() {
                 .attr({x: game.tiled(x), y: game.tiled(y), z: 2}));
         } else if (game.others < game.num_others && y > 0 && !game.random.range(0,60)) {
             game.others += 1;
-            var ent = Crafty.e("2D, DOM, solid, alive, Bounded").Bounded()
+            var ent = Crafty.e("2D, DOM, player, Bounded").Bounded()
                 .attr({x: game.tiled(x), y: game.tiled(y), z: 2});
             if (game.others === game.num_others) {
                 ent.last = true;
