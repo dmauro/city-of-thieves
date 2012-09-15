@@ -21,10 +21,10 @@ app.set 'view engine', 'jade'
 app.set 'view options', {layout: false}
 
 app.get "/", (req, res) ->
-    res.render "index"
+    res.render "game"
 
 app.get "/game/:id", (req, res) ->
-    res.render "index", { lobby_id : req.params.id }
+    res.render "game", { lobby_id : req.params.id }
 
 io = sio.listen app
 game.init io
