@@ -20,7 +20,6 @@ game.end = function(x) {
 
 game.init_random = function(seed) {
     game.random = window.alea_random(seed);
-    console.log(game.random.range(1,100));
 }
 
 game.init_sprites = function() {
