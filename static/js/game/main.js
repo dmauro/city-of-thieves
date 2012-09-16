@@ -21,6 +21,15 @@ game.end = function(x) {
     scenes.unbind();
 }
 
+game.get_collision_poly = function() {
+    var polys = [
+        [10, 10],
+        [54, 10],
+        [54, 54],
+        [10, 54]];
+    return new Crafty.polygon(polys);
+}
+
 game.place = function(sprite, x, y, z) {
     var e = Crafty.e("2D, DOM, "+sprite).attr('z',x+1 * y+1);
     game.iso.place(x, y, z || 0, e);
@@ -40,7 +49,7 @@ game.place_random = function(e, noalea) {
 
 game.create_thief = function(x, y) {
     return game.place('stone, Thief, Collision, Other', x, y, 1)
-        //.collision(new Crafty.polygon(game.hit_box.slice(0)))
+        .collision(game.get_collision_poly())
         .attr({z: y+100});
 }
 game.on_player_moved = function(pid, x, y) {
@@ -131,7 +140,7 @@ game.init_components = function() {
     });
     Crafty.c("Directional", {
         Directional: function(name, is_guard) {
-            this.npdir = 1;
+            var e = this;
             this.onDirectionChange = function(pdx, pdy, dx, dy) {
                 var map = [null,
                     "-1,-1", "0,-1", "1,-1",
@@ -139,25 +148,28 @@ game.init_components = function() {
                     "-1,1",  "0,1",  "1,1",
                 ];
                 var psprite = name + map.indexOf(pdx+","+pdy);
-                this.npdir = map.indexOf(dx+","+dy);
-                var nsprite = name + this.npdir;
+                e.npdir = map.indexOf(dx+","+dy);
+                if (e.npdir == -1) { e.npdir = 9}
+                var nsprite = name + e.npdir;
 
                 if (map[nsprite] !== null && nsprite !== psprite) {
                     if (pdx || pdy) {
-                        this.removeComponent(psprite);
+                        e.removeComponent(psprite);
                     }
-                    this.addComponent(nsprite);
+                    e.addComponent(nsprite);
                 }
 
-                if (is_guard && (this.npdir != 5 && this.npdir != -1)) {
-                    var points = [[0,0],[-80,-160],[80,-160]];
+                /*
+                if (is_guard && (e.npdir != 5 && e.npdir != -1)) {
+                    //var points = [[0,0],[-80,-160],[80,-160]];
+                    var points = [[-50,0],[-50,-200],[50,-200], [50,0]];
                     var npoints = [];
                     var angles = [null,
                         -Math.PI/4, 0, Math.PI/4,
                         -Math.PI/2, 0, Math.PI/2,
                         -Math.PI/4*3, Math.PI, Math.PI/4*3,
                     ];
-                    var a = angles[this.npdir];
+                    var a = angles[e.npdir];
                     $.each(points, function(i, point) {
                         var x = point[0];
                         var y = point[1];
@@ -167,12 +179,12 @@ game.init_components = function() {
                         ny += 42;
                         npoints.push([nx, ny]);
                     });
-                    console.log(this.npdir, a, npoints);
                     var guardpoly = new Crafty.polygon(npoints);
-                    this.collision(guardpoly).addComponent("WiredHitBox");
-                    
+                    e.collision(game.get_collision_poly(e)).addComponent("WiredHitBox");
                 }
+                */
             }
+            this.onDirectionChange()
             return this;
         },
     });
@@ -181,13 +193,78 @@ game.init_components = function() {
             this.requires("Collision");
         }
     });
+    Crafty.c("Guard", {
+        init: function() {
+            var guard = this;
+            this.prev_collisions = [];
+            this.requires("Collision")
+                .bind("EnterFrame", function(event) {
+                    if (event.frame % 5) { return; }
+                    var collisions = guard.hit('Thief');
+                    if (collisions !== false) {
+                        $.each(this.prev_collisions, function(i, c) { c.obj.conceal(); });
+                        $.each(collisions, function(i, c) { c.obj.reveal(); });
+                        guard.prev_collisions = collisions.slice(0);
+                    } else {
+                        $.each(guard.prev_collisions, function(i, c) { c.obj.conceal(); });
+                    }
+                })
+                ;
+        },
+        hit2: function (comp) {
+            var area = this._mbr || this,
+                results = Crafty.map.search(area, false),
+                i = 0, l = results.length,
+                dupes = {},
+                id, obj, oarea, key,
+                hasMap = ('map' in this && 'containsPoint' in this.map),
+                finalresult = [];
+
+            if (!l) {
+                return false;
+            }
+
+            for (; i < l; ++i) {
+                obj = results[i];
+                oarea = obj._mbr || obj; //use the mbr
+
+                if (!obj) continue;
+                id = obj[0];
+
+                //check if not added to hash and that actually intersects
+                if (!dupes[id] && this[0] !== id && obj.__c[comp]) {/* &&
+                                 oarea._x < area._x + area._w && oarea._x + oarea._w > area._x &&
+                                 oarea._y < area._y + area._h && oarea._h + oarea._y > area._y)*/
+                    dupes[id] = obj;}
+            }
+
+            for (key in dupes) {
+                obj = dupes[key];
+
+                if (hasMap && 'map' in obj) {
+                    var SAT = this._SAT(this.map, obj.map);
+                    SAT.obj = obj;
+                    SAT.type = "SAT";
+                    if (SAT) finalresult.push(SAT);
+                } else {
+                    finalresult.push({ obj: obj, type: "MBR" });
+                }
+            }
+
+            if (!finalresult.length) {
+                return false;
+            }
+
+            return finalresult;
+        },
+    })
     Crafty.c("Player", {
         init: function() {
             this.requires("Collision")
                 .bind('Moved', function(from) {
                     window.player_move(this.x, this.y);
                 })
-                .onHit('Other',
+                .onHit('Thief',
                     function(collisions) {
                         if (collisions.length) {
                             var first = collisions[0].obj;
@@ -220,7 +297,7 @@ game.init_players = function() {
     });
     //create our player entity with some premade components
     game.player = Crafty.e("2D, DOM, stone, Thief, LeftControls, Collision, Player, Bounded")
-            .collision(new Crafty.polygon(game.hit_box.slice(0)))
+            .collision(game.get_collision_poly())
             .leftControls(.5)
             .Bounded()
 
@@ -228,7 +305,8 @@ game.init_players = function() {
     // Send initial coordinates to the server.
     window.player_move(game.player.x, game.player.y);
 
-    game.finn = Crafty.e("2D, DOM, finn1, Bounded, Directional").Bounded().Directional("finn", true);
+    game.finn = Crafty.e("2D, DOM, finn1, Bounded, Directional, Guard").Bounded().Directional("finn", true);
+    game.finn.collision(new Crafty.polygon([[0,0],[64,0],[64,85],[0,85]]))
     game.place_random(game.finn);
     scenes.ais.push(game.finn);
 }
@@ -254,8 +332,8 @@ game.init = function() {
 game.begin = function() {
     game.width_px = game.tiled(game.width);
     game.height_px = game.tiled(game.height/4)+(game.tile_size/4);
-    var tsq = game.tile_size / 8;
-    game.hit_box = [[tsq*3,tsq*3],[tsq*5,tsq*3],[tsq*5,tsq*5],[tsq*3,tsq*5]];
+    game.tsq = game.tile_size / 8;
+    game.hit_box = [[game.tsq*3,game.tsq*3],[game.tsq*5,game.tsq*3],[game.tsq*5,game.tsq*5],[game.tsq*3,game.tsq*5]];
 
     Crafty.init(game.width_px, game.height_px);
 
