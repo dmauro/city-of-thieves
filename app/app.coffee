@@ -5,8 +5,6 @@ sio = require 'socket.io'
 game = require './game'
 
 # Global vars
-port = 1428
-ip = "127.0.0.1"
 cwd = process.cwd()
 
 # Build and run server
@@ -40,5 +38,12 @@ app.get "/game/:id", (req, res) ->
 io = sio.listen app
 game.init io
 
-app.listen port, ip
-console.log "Server is running at http://#{ip}:#{port}"
+if process.env.NODE_ENV is "development"
+    port = 1428
+    ip = "127.0.0.1"
+    app.listen port, ip
+    console.log "Server is running at http://#{ip}:#{port}"
+else if process.env.NODE_ENV is "production"
+    port = 80
+    app.listen port
+    console.log "Server is running in production."

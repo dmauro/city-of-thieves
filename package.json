@@ -1,0 +1,18 @@
+{
+  "name": "city-of-thieves",
+  "subdomain": "dmauro.city-of-thieves",
+  "scripts": {
+    "start": "app/launcher.js"
+  },
+  "version": "0.0.0-5",
+  "engines": {
+    "node": "0.8.x"
+  },
+  "dependencies": {
+    "coffee-script": "1.3.3",
+    "connect": "2.3.6",
+    "express": "2.5.1",
+    "jade": "0.16.2",
+    "socket.io": "0.9.10"
+  }
+}
