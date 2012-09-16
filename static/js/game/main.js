@@ -37,13 +37,13 @@ game.place = function(sprite, x, y, z) {
 
 game.place_random = function(e, noalea) {
     if (noalea) {
-        var x = Math.floor((Math.random()*game.width));
-        var y = Math.floor((Math.random()*game.width));
+        var x = Math.floor((Math.random()*(game.width_px-65)));
+        var y = Math.floor((Math.random()*(game.height_px-105)));
     } else {
-        var x = game.random.range(0, game.width);
-        var y = game.random.range(0, game.height);
+        var x = game.random.range(0, game.width_px-65);
+        var y = game.random.range(0, game.height_px-105);
     }
-    game.iso.place(x, y, 1, e.attr({z: 999}));
+    e.attr({x:x, y:y, z: 999});
 }
 
 game.create_thief = function(x, y) {
@@ -98,7 +98,7 @@ game.init_scenes = function() {
 }
 
 game.bound = function(e, px, py) {
-    if (e.hit('solid') || e.x <= 0 || e.y < 0 || e.x > (game.width_px - 60) || e.y > (game.height_px - 100)) {
+    if (e.hit('solid') || e.x <= 0 || e.y < 0 || e.x > (game.width_px - 65) || e.y > (game.height_px - 105)) {
         e.attr({x: px, y: py});
         e.dx *= -1;
         e.dy *= -1;
