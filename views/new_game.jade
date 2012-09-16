@@ -18,6 +18,7 @@ html(lang="en")
         script(src="/js/main.js")
         script(src="/socket.io/socket.io.js")
         script(src="/js/game/networking.js")
+        script(src="/js/lobby.js")
 
     body
         #lobby
@@ -25,25 +26,35 @@ html(lang="en")
                 h1
                     img(src="/img/players.png")
                 ul
-                    li Player_One
-                    li Player_One
-                    li Player_One
-                    li Player_One
-                    li Player_One
-                    li Player_One
-                    li Player_One
-                    li Player_One
             .start
                 .waiting
-                    button
+                    button(disabled="true")
                     marquee(scrollamount="15") Waiting for more players . . .
                     p Invite your friends, just give them this link:
                         input(type="text", value="url")
                 .ready
-                    button
+                    button(onclick="socket.emit('start_game');")
+                    p Any player press play to start the game!
         #game
+            #container(style="width:896px;margin:auto;text-align:center;")
+                #hud
+                #cr-stage(style="height:400px;width:896px;background:#ccc;")
+                    h1 What Time Is It?
+                    div click to start
+                .controls
+                    b
+                        u Controls
+                        div Treasure:
+                            span#treasure
+                    br
+                    WASD: movement
+                    br
+                    Space: steal
+                    br
 
-    -if (typeof(lobby_id) != 'undefined')
-        script
-            window.game.seed = #{lobby_id};
-            window.game.nickname = "#{nickname}";
+        -if (typeof(lobby_id) != 'undefined')
+            script
+                window.game.seed = #{lobby_id};
+        -if (typeof(nickname) != "undefined")
+            script
+                window.game.nickname = "#{nickname}";

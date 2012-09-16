@@ -1,4 +1,9 @@
 (function() {
+    $(function() {
+        console.log("Did we get sent a nickname?", game.nickname);
+        game.nickname = game.nickname || prompt("Sorry, we didn't catch your name:") || "thief";
+    });
+
     var _player_count = 0;
     game.other_players = {};
 
@@ -20,15 +25,13 @@
     _ready_for_start = function() {
         console.log("WE HAVE ENOUGH PLAYERS");
         // We can press start to begin now, or another player can
-        button = $('<div style="width:300px;height:50px;background:blue;margin:20px auto;cursor:poiner;">Start</div>');
-        $('body').append(button);
-        button.click(function() {
-            socket.emit("start_game");
-        })
+        lobby.is_ready();
+        console.log("listening for start game");
         socket.on("start_game", function(data) {
+            console.log("got start_game");
+            lobby.start_game();
             _listen_for_other_players();
             game.begin();
-            button.remove();
         });
     }
 
@@ -40,8 +43,10 @@
             console.log("We're gonna try to connect to lobby:", game.seed);
             socket.emit("join_lobby", data);
             socket.on("added_to_lobby", function(data) {
+                game.nickname = data.your_nick;
                 _player_count = data.player_count;
                 game.other_players = data.other_players;
+                lobby.set_players(game.other_players);
                 console.log("WE ARE IN A LOBBY", data.id, " WITH X PLAYERS", data.player_count, data);
                 if (data.is_ready) {
                     console.log("Joined a game already ready");
@@ -52,17 +57,20 @@
                     console.log("A NEW PLAYER JOINED YOUR LOBBY");
                     _player_count++;
                     game.other_players[data.id] = data
+                    lobby.set_players(game.other_players);
                 });
                 socket.on("player_dropped", function(data) {
                     console.log("A PLAYER HAS LEFT YOUR LOBBY");
                     _player_count--;
                     delete game.other_players[data.id]
+                    lobby.set_players(game.other_players);
                 });
                 socket.on("ready", function() {
                     _ready_for_start();
                 });
                 socket.on("end_game", function() {
                     game.end();
+                    lobby.game_summary();
                 });
             });
         });

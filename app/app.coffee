@@ -21,8 +21,10 @@ app.set 'view options', {layout: false}
 app.get "/", (req, res) ->
     res.render "start_screen"
 
+_latest_nick = null;
+
 app.get "/game/", (req, res) ->
-    res.locals.nickname = req.query.nickname
+    _latest_nick = req.query.nickname or null
     # Get a lobby to send them to:
     for _, lobby of game.lobbies
         unless lobby.full or lobby.is_playing
@@ -34,8 +36,8 @@ app.get "/game/", (req, res) ->
     res.redirect "/game/#{lobby_id}"
 
 app.get "/game/:id", (req, res) ->
-    res.render "game", {
-        nickname    : res.locals.nickname
+    res.render "new_game", {
+        nickname    : _latest_nick
         lobby_id    : req.params.id
     }
 

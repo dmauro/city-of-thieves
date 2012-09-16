@@ -3,7 +3,7 @@
 module.exports.lobbies = _lobbies = {}
 module.exports.players = _players = {}
 _min_players = 1;
-_max_players = 2;
+_max_players = 4;
 _game_length = 3 * 60 * 1000;
 
 class Lobby
@@ -52,6 +52,7 @@ class Lobby
             is_ready        : @ready
             player_count    : @players.length
             other_players   : other_players
+            your_nick       : player.nickname
         }
         if @players.length >= _min_players and not @ready
             @ready = true
