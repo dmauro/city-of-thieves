@@ -135,11 +135,18 @@ game.init_components = function() {
                     window.player_move(this.x, this.y);
                 })
                 .onHit('Other',
-                    function() {
-                        $('body').css({'background-color': 'green'});
+                    function(collisions) {
+                        if (collisions.length) {
+                            var first = collisions[0].obj;
+                            if (first.css("opacity") != "0.5") {
+                                if (this.thief_collision) { this.thief_collision.css("opacity", "1"); }
+                                first.css("opacity", "0.5");
+                                this.thief_collision = first;
+                            }
+                        }
                     },
                     function() {
-                        $('body').css({'background-color': 'red'});
+                        this.thief_collision && this.thief_collision.css("opacity", "1");
                     })
                 ;
         },
