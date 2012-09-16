@@ -49,7 +49,7 @@ game.init_scenes = function() {
 }
 
 game.bound = function(e, px, py) {
-    if (e.hit('solid')) {
+    if (e.hit('solid') || e.x <= 0 || e.y < -(game.tile_size/2) || e.x > game.width_px - game.tile_size/2 || e.y > game.height_px - game.tile_size) {
         e.attr({x: px, y: py});
     }
     e.attr({z: e.y+100});
@@ -108,7 +108,9 @@ game.init = function() {
 }
 
 game.begin = function() {
-    Crafty.init(game.tiled(game.width), game.tiled(game.height/4)+game.tile_size);
+    game.width_px = game.tiled(game.width);
+    game.height_px = game.tiled(game.height/4)+(game.tile_size/4);
+    Crafty.init(game.width_px, game.height_px);
 
     game.init_sprites();
     game.init_components();
