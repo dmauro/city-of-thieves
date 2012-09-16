@@ -90,10 +90,12 @@ body {
     width:100%;
     height:100%;
     background:rgba(0,0,0, 0.7);
+    background:black;
 }
 
 #cr-stage {
-    border:2px solid rgba(0,0,0, 0.1);
+    position:relative;
+    top:100px;
     z-index:1;
 }
 
@@ -105,6 +107,7 @@ body {
     position:relative;
     width:1366px;
     height:768px;
+    margin:0 auto;
 }
 
 #game_background img,
