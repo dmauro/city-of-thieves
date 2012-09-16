@@ -46,7 +46,7 @@ game.place_random = function(e, noalea) {
 }
 
 game.create_thief = function(x, y) {
-    return game.place('stone, Thief, Collision, Other', x, y, 1)
+    return game.place('big-guy1, Thief, Collision, Other, Directional', x, y, 1).Directional("big-guy")
         .collision(game.get_collision_poly())
         .attr({z: y+100});
 }
@@ -71,16 +71,24 @@ game.init_sprites = function() {
 		grass: [0,0,1,1],
 		stone: [1,0,1,1],
 	});
-    Crafty.sprite(1, "/img/sprite-finn.png", {
-        finn1: [128,0,64,85],
-        finn2: [196,85,64,85],
-        finn3: [196,0,64,85],
-        finn4: [128,85,64,85],
-        finn6: [64,85,64,85],
-        finn7: [64,0,64,85],
-        finn8: [0,85,64,85],
-        finn9: [0,0,64,85],
-    });
+    var sprite = function(prefix) {
+        var dirs = [
+            [1, [128,0,64,85]],
+            [2, [196,85,64,85]],
+            [3, [196,0,64,85]],
+            [4, [128,85,64,85]],
+            [6, [64,85,64,85]],
+            [7, [64,0,64,85]],
+            [8, [0,85,64,85]],
+            [9, [0,0,64,85]],]
+        var map = {};
+        $.each(dirs, function(i, dir) {
+            map[prefix+dir[0]] = dir[1];
+        })
+        Crafty.sprite(1, "/img/sprite-"+prefix+".png", map);
+    }
+    sprite("finn");
+    sprite("big-guy");
 }
 
 game.init_sounds = function() {
@@ -299,7 +307,7 @@ game.init_players = function() {
 
     });
     //create our player entity with some premade components
-    game.player = Crafty.e("2D, DOM, stone, Thief, LeftControls, Collision, Player, Bounded")
+    game.player = Crafty.e("2D, DOM, big-guy1, Thief, LeftControls, Collision, Player, Bounded")
             .collision(game.get_collision_poly())
             .leftControls(.5)
             .Bounded()
