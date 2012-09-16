@@ -1,0 +1,85 @@
+body {
+    background:url(/img/lobby-bg.jpg) no-repeat center center fixed;
+    -webkit-background-size:cover;
+    -moz-background-size:cover;
+    -o-background-size:cover;
+    background-size:cover;
+}
+
+#lobby .player_list {
+    float:left;
+    position:relative;
+    margin:2em 5em;
+    padding:1em 4em 1em 3em;
+    background:rgba(255,255,255, 0.5);
+    border-radius:5px;
+    -webkit-border-radius:5px;
+    -moz-border-radius:5px;
+}
+
+#lobby .player_list li {
+    list-style-type:none;
+    font-family:'Nothing You Could Do', Arial, sans-serif;
+    font-size:2em;
+}
+
+#lobby .start {
+    position:relative;
+    margin:0 auto;
+    width:40em;
+    height:50em;
+    padding:2em;
+    background:url(/img/start-bg.png) no-repeat center -175px;
+    background-size:100% 100%;
+}
+
+#lobby .start button {
+    display:block;
+    width:13.9em;
+    height:4.7em;
+    margin:auto;
+    outline:0;
+    border:0;
+    background:url(/img/play-button.png) no-repeat center bottom;
+    background-size:100% 200%;
+}
+
+#lobby .start button:active {
+    background-position:center top;
+}
+
+#lobby .start .waiting button {
+    opacity:0.25;
+}
+
+#lobby .start .ready {
+    display:none;
+}
+
+#lobby .start p,
+#lobby .start marquee {
+    text-align:center;
+    font-size:1.6em;
+    font-family:'Nothing You Could Do', Arial, sans-serif;
+}
+
+#lobby .start marquee {
+    display:block;
+    width:60%;
+    margin:1em auto;
+    marquee-speed:fast;
+}
+
+#lobby .start input {
+    width:80%;
+    outline:0;
+    border:1px solid #999;
+    border-radius:5px;
+    -webkit-border-radius:5px;
+    -moz-border-radius:5px;
+    padding:0.25em;
+    font-family:Arial, sans-serif;
+    box-shadow:inset 1px 1px 2px rgba(0,0,0, 0.3);
+    -webkitbox-shadow:inset 1px 1px 2px rgba(0,0,0, 0.3);
+    -moz-box-shadow:inset 1px 1px 2px rgba(0,0,0, 0.3);
+}

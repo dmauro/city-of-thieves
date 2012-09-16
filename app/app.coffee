@@ -39,6 +39,9 @@ app.get "/game/:id", (req, res) ->
         lobby_id    : req.params.id
     }
 
+app.get "/lobby_test", (req, res) ->
+    res.render "new_game"
+
 io = sio.listen app
 game.init io
 
