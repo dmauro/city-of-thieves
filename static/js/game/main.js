@@ -4,6 +4,7 @@ game = {
     width: 15,
     state: {},
     players: {},
+    guards: [],
     thief_prob: .1, 
     begun: false,
     when_ready: [],
@@ -329,10 +330,16 @@ game.init_players = function() {
     // Send initial coordinates to the server.
     window.player_move(game.player.x, game.player.y);
 
-    game.finn = Crafty.e("2D, DOM, finn1, Bounded, Directional, Guard").Bounded().Directional("finn", true).attr({speed: 2});
-    game.finn.collision(new Crafty.polygon([[0,0],[64,0],[64,85],[0,85]]))
-    game.place_random(game.finn);
-    scenes.ais.push(game.finn);
+    var mk_guard = function(name) {
+        var guard = Crafty.e("2D, DOM, finn1, Bounded, Directional, Guard").Bounded().Directional(name, true)
+            .attr({speed: 2})
+            .collision(new Crafty.polygon([[0,0],[64,0],[64,85],[0,85]]));
+        game.place_random(guard);
+        scenes.ais.push(guard);
+        game.guards.push(guard);
+    }
+    mk_guard("finn");
+    mk_guard("finn");
 }
 
 game.generate_world = function() {
