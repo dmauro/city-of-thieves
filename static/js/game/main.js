@@ -14,6 +14,10 @@ game.tiled = function(x) {
 }
 
 game.end = function(x) {
+    console.log("Ending the game");
+
+    // GAME.PLAYER HAS NOT METHOD STOP? -dave
+
     game.player.stop().disableControl();
     scenes.unbind();
 }

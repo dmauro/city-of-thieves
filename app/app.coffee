@@ -25,7 +25,7 @@ app.get "/game/", (req, res) ->
     res.locals.nickname = req.query.nickname
     # Get a lobby to send them to:
     for _, lobby of game.lobbies
-        if not lobby.full
+        unless lobby.full or lobby.is_playing
             lobby_id = lobby.id
             break
     unless lobby_id

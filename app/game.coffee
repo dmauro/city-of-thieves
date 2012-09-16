@@ -1,4 +1,4 @@
-alea = require('../static/js/lib/alea.js').alea_random
+#alea = require('../static/js/lib/alea.js').alea_random
 
 module.exports.lobbies = _lobbies = {}
 module.exports.players = _players = {}
@@ -12,6 +12,7 @@ class Lobby
         @ready = false
         @full = false
         @is_playing = false
+        @game_timer = null
         _lobbies[@id] = @
 
     broadcast: (name, data, is_volatile=false, exclude=null) ->
@@ -71,7 +72,7 @@ class Lobby
             @broadcast 'unready'
         @full = @players.length >= _max_players
         unless @players.length
-            delete _lobbies[@id]
+            @remove()
 
     end_game: ->
         @broadcast 'end_game'
@@ -80,8 +81,14 @@ class Lobby
         for player in @players
             player.start_game()
         # Set timer for round ending
-        setTimeout @end_game, game_length
+        @game_timer = setTimeout =>
+            @end_game()
+        , _game_length
         @is_playing = true
+
+    remove: ->
+        clearTimeout @game_timer
+        delete _lobbies[@id]
 
 class Player
     constructor: (@socket, @id = new Date().getTime()) ->

@@ -61,7 +61,9 @@
                 socket.on("ready", function() {
                     _ready_for_start();
                 });
-                socket.on("game_end", game.end);
+                socket.on("end_game", function() {
+                    game.end();
+                });
             });
         });
     }
