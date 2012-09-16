@@ -31,7 +31,7 @@ game.get_collision_poly = function() {
 
 game.place = function(sprite, x, y, z) {
     var e = Crafty.e("2D, DOM, "+sprite).attr('z',x+1 * y+1);
-    game.iso.place(x, y, z || 0, e);
+    game.place_random(e);
     return e;
 }
 
@@ -43,7 +43,7 @@ game.place_random = function(e, noalea) {
         var x = game.random.range(0, game.width_px-65);
         var y = game.random.range(0, game.height_px-105);
     }
-    e.attr({x:x, y:y, z: 999});
+    e.attr({x:x, y:y, z:999});
 }
 
 game.create_thief = function(x, y) {
