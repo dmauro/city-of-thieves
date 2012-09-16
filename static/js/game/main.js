@@ -5,6 +5,8 @@ game = {
     state: {},
     players: {},
     thief_prob: .1, 
+    begun: false,
+    when_ready: [],
 }
 
 game.tiled = function(x) {
@@ -22,18 +24,36 @@ game.place = function(sprite, x, y, z) {
     return e;
 }
 
+game.place_random = function(e, noalea) {
+    if (noalea) {
+        var x = Math.floor((Math.random()*game.width));
+        var y = Math.floor((Math.random()*game.width));
+    } else {
+        var x = game.random.range(0, game.width);
+        var y = game.random.range(0, game.height);
+    }
+    game.iso.place(x, y, 1, e.attr({z: 999}));
+}
+
 game.create_thief = function(x, y) {
     return game.place('stone, Collision, Other', x, y, 1)
         //.collision(new Crafty.polygon(game.hit_box.slice(0)))
         .attr({z: y+100});
 }
 game.on_player_moved = function(pid, x, y) {
-    if (game.players[pid] === undefined) {
-        game.players[pid] = game.create_thief(x, y);
-    } else {
-        game.players[pid].attr({x: x, y: y});
+    var handle = function() {
+        if (game.players[pid] === undefined) {
+            game.players[pid] = game.create_thief(x, y);
+        }
+        game.players[pid].attr({x: x, y: y, z: y+100});
     }
-    game.players[pid].attr({z: y+100});
+
+    // This may be called before we initialize, since everyone starts at once.
+    if (game.begun) {
+        handle();
+    } else {
+        game.when_ready.push(handle);
+    }
 }
 
 game.init_sprites = function() {
@@ -134,15 +154,17 @@ game.init_players = function() {
 
     });
     //create our player entity with some premade components
-    game.player = Crafty.e("2D, DOM, stone, LeftControls, Collision, Player, Bounded")
+    game.player = Crafty.e("2D, DOM, stone, LeftControls, Collision, Player, Bounded, WiredHitBox")
             .collision(new Crafty.polygon(game.hit_box.slice(0)))
             .leftControls(.5)
             .Bounded()
-            .attr({z: 999});
-    game.iso.place(5, 5, 1, game.player);
+
+    game.place_random(game.player, true);
+    // Send initial coordinates to the server.
+    window.player_move(game.player.x, game.player.y);
 
     game.finn = Crafty.e("2D, DOM, finn1, Bounded, Directional").Bounded().Directional("finn");
-    game.iso.place(2, 2, 1, game.finn.attr({z: 999}));
+    game.place_random(game.finn);
     scenes.ais.push(game.finn);
 }
 
@@ -178,4 +200,8 @@ game.begin = function() {
     game.init_scenes();
 
     Crafty.scene("main");
+
+    // Handle events we get before the game state is initialized.
+    game.begun = true;
+    $.each(game.when_ready, function(i, el) { el(); });
 }
