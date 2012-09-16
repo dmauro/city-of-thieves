@@ -40,7 +40,7 @@ game.place_random = function(e, noalea) {
 }
 
 game.create_thief = function(x, y) {
-    return game.place('stone, Collision, Other', x, y, 1)
+    return game.place('stone, Thief, Collision, Other', x, y, 1)
         //.collision(new Crafty.polygon(game.hit_box.slice(0)))
         .attr({z: y+100});
 }
@@ -93,7 +93,7 @@ game.bound = function(e, px, py) {
 }
 
 game.init_components = function() {
-    Crafty.c('Bounded', {
+    Crafty.c("Bounded", {
         Bounded: function() {
             this.requires("Collision")
                 .bind('Moved', function(from) {
@@ -101,6 +101,26 @@ game.init_components = function() {
                 });
             return this;
         },
+    });
+    Crafty.c("Thief", {
+        init: function() {
+            this.treasure = [0];
+            this.revealed = false;
+            this.stealFrom = function(other) {
+                this.treasure = this.treasure.concat(other.treasure);
+                other.treasure = [];
+            }
+            this.reveal = function() {
+                this.revealed = true;
+                this.css("opacity", "0.5");
+
+            }
+            this.conceal = function() {
+                this.revealed = false;
+                this.css("opacity", "1");
+            }
+        }
+
     });
     Crafty.c("Directional", {
         Directional: function(name) {
@@ -138,15 +158,15 @@ game.init_components = function() {
                     function(collisions) {
                         if (collisions.length) {
                             var first = collisions[0].obj;
-                            if (first.css("opacity") != "0.5") {
-                                if (this.thief_collision) { this.thief_collision.css("opacity", "1"); }
-                                first.css("opacity", "0.5");
+                            if (!first.revealed) {
+                                if (this.thief_collision) { this.thief_collision.conceal(); }
+                                first.reveal();
                                 this.thief_collision = first;
                             }
                         }
                     },
                     function() {
-                        this.thief_collision && this.thief_collision.css("opacity", "1");
+                        this.thief_collision && this.thief_collision.conceal();
                     })
                 ;
         },
@@ -165,7 +185,7 @@ game.init_players = function() {
 
     });
     //create our player entity with some premade components
-    game.player = Crafty.e("2D, DOM, stone, LeftControls, Collision, Player, Bounded, WiredHitBox")
+    game.player = Crafty.e("2D, DOM, stone, Thief, LeftControls, Collision, Player, Bounded, WiredHitBox")
             .collision(new Crafty.polygon(game.hit_box.slice(0)))
             .leftControls(.5)
             .Bounded()
