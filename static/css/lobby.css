@@ -91,4 +91,13 @@ body {
     height:100%;
     padding-top:20px;
     background:rgba(0,0,0, 0.7);
+    background:url(/img/game-bg-pattern.png);
+}
+
+#cr-stage {
+    border:2px solid rgba(0,0,0, 0.1);
+}
+
+#game .controls {
+    display:none;
 }

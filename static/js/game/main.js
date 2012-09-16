@@ -1,7 +1,7 @@
 game = {
     tile_size: 64,
-    height: 23,
-    width: 14,
+    height: 37,
+    width: 15,
     state: {},
     players: {},
     thief_prob: .1, 
@@ -340,7 +340,7 @@ game.generate_world = function() {
 	for(var i = game.width-1; i >= 0; i--) {
 		for(var y = 0; y < game.height; y++) {
             if (!(i == game.width-1 && y % 2)) {
-                game.place('grass', i, y);
+                //game.place('grass', i, y);
             }
             if (!game.random.range(0, 1/game.thief_prob)) {
                 scenes.ais.push(game.create_thief(i, y));
