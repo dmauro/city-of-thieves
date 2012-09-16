@@ -82,7 +82,7 @@ game.init_players = function() {
     });
     //create our player entity with some premade components
     var player = Crafty.e("2D, DOM, stone, LeftControls, Bounded")
-            .leftControls(1)
+            .leftControls(.5)
             .Bounded()
             .attr({z: 999});
     game.iso.place(5, 5, 1, player);
@@ -96,7 +96,7 @@ game.generate_world = function() {
             if (!(i == game.width-1 && y % 2)) {
                 game.place('grass', i, y);
             }
-            if (!game.random.range(0, 60)) {
+            if (!game.random.range(0, 5)) {
                 scenes.ais.push(game.create_thief(i, y));
             }
 		}
