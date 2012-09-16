@@ -130,7 +130,8 @@ game.init_components = function() {
 
     });
     Crafty.c("Directional", {
-        Directional: function(name) {
+        Directional: function(name, is_guard) {
+            this.npdir = 1;
             this.onDirectionChange = function(pdx, pdy, dx, dy) {
                 var map = [null,
                     "-1,-1", "0,-1", "1,-1",
@@ -138,13 +139,38 @@ game.init_components = function() {
                     "-1,1",  "0,1",  "1,1",
                 ];
                 var psprite = name + map.indexOf(pdx+","+pdy);
-                var nsprite = name + map.indexOf(dx+","+dy);
+                this.npdir = map.indexOf(dx+","+dy);
+                var nsprite = name + this.npdir;
 
                 if (map[nsprite] !== null && nsprite !== psprite) {
                     if (pdx || pdy) {
                         this.removeComponent(psprite);
                     }
                     this.addComponent(nsprite);
+                }
+
+                if (is_guard && (this.npdir != 5 && this.npdir != -1)) {
+                    var points = [[0,0],[-80,-160],[80,-160]];
+                    var npoints = [];
+                    var angles = [null,
+                        -Math.PI/4, 0, Math.PI/4,
+                        -Math.PI/2, 0, Math.PI/2,
+                        -Math.PI/4*3, Math.PI, Math.PI/4*3,
+                    ];
+                    var a = angles[this.npdir];
+                    $.each(points, function(i, point) {
+                        var x = point[0];
+                        var y = point[1];
+                        var nx = Math.floor(x*Math.cos(a) - y*Math.sin(a));
+                        var ny = Math.floor(y*Math.cos(a) + x*Math.sin(a));
+                        nx += 32
+                        ny += 42;
+                        npoints.push([nx, ny]);
+                    });
+                    console.log(this.npdir, a, npoints);
+                    var guardpoly = new Crafty.polygon(npoints);
+                    this.collision(guardpoly).addComponent("WiredHitBox");
+                    
                 }
             }
             return this;
@@ -174,6 +200,7 @@ game.init_components = function() {
                     },
                     function() {
                         this.thief_collision && this.thief_collision.conceal();
+                        this.thief_collision = null;
                     })
                 ;
         },
@@ -192,7 +219,7 @@ game.init_players = function() {
 
     });
     //create our player entity with some premade components
-    game.player = Crafty.e("2D, DOM, stone, Thief, LeftControls, Collision, Player, Bounded, WiredHitBox")
+    game.player = Crafty.e("2D, DOM, stone, Thief, LeftControls, Collision, Player, Bounded")
             .collision(new Crafty.polygon(game.hit_box.slice(0)))
             .leftControls(.5)
             .Bounded()
@@ -201,7 +228,7 @@ game.init_players = function() {
     // Send initial coordinates to the server.
     window.player_move(game.player.x, game.player.y);
 
-    game.finn = Crafty.e("2D, DOM, finn1, Bounded, Directional").Bounded().Directional("finn");
+    game.finn = Crafty.e("2D, DOM, finn1, Bounded, Directional").Bounded().Directional("finn", true);
     game.place_random(game.finn);
     scenes.ais.push(game.finn);
 }
