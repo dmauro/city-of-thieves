@@ -1,9 +1,4 @@
 (function() {
-    $(function() {
-        console.log("Did we get sent a nickname?", game.nickname);
-        game.nickname = game.nickname || prompt("Sorry, we didn't catch your name:") || "thief";
-    });
-
     var _player_count = 0;
     game.other_players = {};
 
@@ -27,6 +22,10 @@
         // We can press start to begin now, or another player can
         lobby.is_ready();
         console.log("listening for start game");
+        if (window.dev_mode) {
+            console.log("DEV MODE GO");
+            socket.emit("start_game");
+        }
         socket.on("start_game", function(data) {
             console.log("got start_game");
             lobby.start_game();

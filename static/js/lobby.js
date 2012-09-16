@@ -1,4 +1,14 @@
 (function() {
+    // Get name if we don't have it
+    $(function() {
+        if (window.dev_mode) {
+            game.nickname = "dev_user";
+            return false;
+        }
+        console.log("Did we get sent a nickname?", game.nickname);
+        game.nickname = game.nickname || prompt("Sorry, we didn't catch your name:") || "thief";
+    });
+
     window.lobby = {};
 
     lobby.init = function() {

@@ -41,8 +41,12 @@ app.get "/game/:id", (req, res) ->
         lobby_id    : req.params.id
     }
 
-app.get "/lobby_test", (req, res) ->
-    res.render "new_game"
+app.get "/dev", (req, res) ->
+    res.render "new_game", {
+        nickname    : _latest_nick
+        lobby_id    : new Date().getTime()
+        dev_mode    : true
+    }
 
 io = sio.listen app
 game.init io
