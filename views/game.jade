@@ -36,21 +36,31 @@ html(lang="en")
                     button(onclick="socket.emit('start_game');")
                     p Any player press play to start the game!
         #game
-            #container(style="width:960px;margin:auto;text-align:center;")
-                #hud
-                #cr-stage(style="width:960px;height:592px;")
-                    h1 What Time Is It?
-                    div click to start
-                .controls
-                    b
-                        u Controls
-                        div Treasure:
-                            span#treasure
-                    br
-                    WASD: movement
-                    br
-                    Space: steal
-                    br
+            #game_wrapper
+                #game_background
+                    img(src="/img/game-bg.jpg")
+                #container(style="width:960px;margin:auto;text-align:center;")
+                    #hud
+                    #cr-stage(style="width:960px;height:592px;")
+                        h1 What Time Is It?
+                        div click to start
+                    .controls
+                        b
+                            u Controls
+                            div Treasure:
+                                span#treasure
+                        br
+                        WASD: movement
+                        br
+                        Space: steal
+                        br
+                #game_foreground
+                    .left
+                        img(src="/img/game-bg-left.png")
+                    .right
+                        img(src="/img/game-bg-right.png")
+                    .bottom
+                        img(src="/img/game-bg-bottom.png")
 
         -if (typeof(lobby_id) != 'undefined')
             script

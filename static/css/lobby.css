@@ -89,15 +89,62 @@ body {
     position:fixed;
     width:100%;
     height:100%;
-    padding-top:20px;
     background:rgba(0,0,0, 0.7);
-    background:url(/img/game-bg-pattern.png);
 }
 
 #cr-stage {
     border:2px solid rgba(0,0,0, 0.1);
+    z-index:1;
 }
 
 #game .controls {
     display:none;
+}
+
+#game_wrapper {
+    position:relative;
+    width:1366px;
+    height:768px;
+}
+
+#game_background img,
+#game_foreground img {
+    display:block;
+    position:absolute;
+}
+
+#game_background {
+    position:absolute;
+    width:1366px;
+    height:768px;
+    left:0;
+    top:0;
+    z-index:1;
+}
+
+#game_foreground .left {
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:280px;
+    height:682px;
+    z-index:2;
+}
+
+#game_foreground .right {
+    position:absolute;
+    right:0;
+    bottom:0;
+    width:229px;
+    height:694px;
+    z-index:2;
+}
+
+#game_foreground .bottom {
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:1241px;
+    height:120px;
+    z-index:3;
 }
