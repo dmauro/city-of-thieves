@@ -22,7 +22,7 @@ game.place = function(sprite, x, y, z) {
 }
 
 game.create_thief = function(x, y) {
-    return game.place('stone, Collision', x, y, 1).attr({z: 999});
+    return game.place('stone, Collision', x, y, 1).attr({z: y+100});
 }
 game.on_player_moved = function(pid, x, y) {
     if (game.players[pid] === undefined) {
@@ -30,6 +30,7 @@ game.on_player_moved = function(pid, x, y) {
     } else {
         game.players[pid].attr({x: x, y: y});
     }
+    game.players[pid].attr({z: y+100});
 }
 
 game.init_sprites = function() {
