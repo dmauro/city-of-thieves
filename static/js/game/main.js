@@ -39,8 +39,18 @@ game.on_player_moved = function(pid, x, y) {
 game.init_sprites = function() {
     Crafty.sprite(game.tile_size, "/img/sprite-iso64.png", {
 		grass: [0,0,1,1],
-		stone: [1,0,1,1]
+		stone: [1,0,1,1],
 	});
+    Crafty.sprite(1, "/img/sprite-finn.png", {
+        finn1: [128,0,64,85],
+        finn2: [196,85,64,85],
+        finn3: [196,0,64,85],
+        finn4: [128,85,64,85],
+        finn6: [64,85,64,85],
+        finn7: [64,0,64,85],
+        finn8: [0,85,64,85],
+        finn9: [0,0,64,85],
+    });
 }
 
 game.init_sounds = function() {
@@ -68,11 +78,31 @@ game.init_components = function() {
             return this;
         },
     });
+    Crafty.c("Directional", {
+        Directional: function(name) {
+            this.onDirectionChange = function(pdx, pdy, dx, dy) {
+                var map = [null,
+                    "-1,-1", "0,-1", "1,-1",
+                    "-1,0",  null,   "1,0",
+                    "-1,1",  "0,1",  "1,1",
+                ];
+                var psprite = name + map.indexOf(pdx+","+pdy);
+                var nsprite = name + map.indexOf(dx+","+dy);
+
+                if (map[nsprite] !== null && nsprite !== psprite) {
+                    if (pdx || pdy) {
+                        this.removeComponent(psprite);
+                    }
+                    this.addComponent(nsprite);
+                }
+            }
+            return this;
+        },
+    });
     Crafty.c("Other", {
         init: function() {
             this.requires("Collision");
         }
-
     });
     Crafty.c("Player", {
         init: function() {
@@ -104,14 +134,16 @@ game.init_players = function() {
 
     });
     //create our player entity with some premade components
-    var player = Crafty.e("2D, DOM, stone, LeftControls, Collision, Player, Bounded")
+    game.player = Crafty.e("2D, DOM, stone, LeftControls, Collision, Player, Bounded")
             .collision(new Crafty.polygon(game.hit_box.slice(0)))
             .leftControls(.5)
             .Bounded()
-            .attr({z: 999})
-            ;
-    game.iso.place(5, 5, 1, player);
-    game.player = player;
+            .attr({z: 999});
+    game.iso.place(5, 5, 1, game.player);
+
+    game.finn = Crafty.e("2D, DOM, finn1, Bounded, Directional").Bounded().Directional("finn");
+    game.iso.place(2, 2, 1, game.finn.attr({z: 999}));
+    scenes.ais.push(game.finn);
 }
 
 game.generate_world = function() {

@@ -36,8 +36,13 @@ scenes.init = function() {
                             px = ai.x;
                             py = ai.y;
                             if (!game.random.range(0, 30)) {
+                                var pdx = ai.dx || 0;
+                                var pdy = ai.dy || 0;
                                 ai.dx = game.random.range(-1, 1);
                                 ai.dy = game.random.range(-1, 1);
+                                if (ai.onDirectionChange) {
+                                    ai.onDirectionChange(pdx, pdy, ai.dx, ai.dy);
+                                }
                             }
                             ai.x += ai.dx || 0;
                             ai.y += ai.dy || 0;
