@@ -6,6 +6,10 @@
     var _local_host = 'http://127.0.0.1:1428' 
     var _production_host = 'http://dmauro.city-of-thieves.jit.su'
 
+    var _host = (document.location.host === "127.0.0.1:1428") ? _local_host : _production_host;
+
+    console.log("host is", _host);
+
     _listen_for_other_players = function() {
         socket.on("player_move", function(data) {
             console.log('player_move event');
@@ -33,7 +37,7 @@
     }
 
     window.socket_connect = function() {
-        window.socket = io.connect(_production_host);
+        window.socket = io.connect(_host);
         socket.on("connection_established", function() {
             socket.emit("set_nickname", { nickname : game.nickname });
             var data = (game.seed) ? { id: game.seed } : null;
