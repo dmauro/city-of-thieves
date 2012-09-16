@@ -68,10 +68,6 @@ game.on_player_moved = function(pid, x, y) {
 }
 
 game.init_sprites = function() {
-    Crafty.sprite(game.tile_size, "/img/sprite-iso64.png", {
-		grass: [0,0,1,1],
-		stone: [1,0,1,1],
-	});
     var sprite = function(prefix) {
         var dirs = [
             [1, [128,0]],
@@ -102,7 +98,7 @@ game.init_scenes = function() {
 }
 
 game.bound = function(e, px, py) {
-    if (e.hit('solid') || e.x <= 0 || e.y < -(game.tile_size/2) || e.x > game.width_px - game.tile_size/2 || e.y > game.height_px - game.tile_size) {
+    if (e.hit('solid') || e.x <= 0 || e.y < 0 || e.x > (game.width_px - 60) || e.y > (game.height_px - 100)) {
         e.attr({x: px, y: py});
         e.dx *= -1;
         e.dy *= -1;
@@ -346,10 +342,7 @@ game.generate_world = function() {
     game.iso = Crafty.isometric.size(game.tile_size);
 	for(var i = game.width-1; i >= 0; i--) {
 		for(var y = 0; y < game.height; y++) {
-            if (!(i == game.width-1 && y % 2)) {
-                //game.place('grass', i, y);
-            }
-            if (!game.random.range(0, 1/game.thief_prob)) {
+            if (i >1 && !game.random.range(0, 1/game.thief_prob)) {
                 scenes.ais.push(game.create_thief(i, y));
             }
 		}
@@ -361,11 +354,8 @@ game.init = function() {
 }
 
 game.begin = function() {
-    game.width_px = game.tiled(game.width);
-    game.height_px = game.tiled(game.height/4)+(game.tile_size/4);
-    game.tsq = game.tile_size / 8;
-    game.hit_box = [[game.tsq*3,game.tsq*3],[game.tsq*5,game.tsq*3],[game.tsq*5,game.tsq*5],[game.tsq*3,game.tsq*5]];
-
+    game.width_px = 960;
+    game.height_px = 592;
     Crafty.init(game.width_px, game.height_px);
 
     game.init_sprites();
