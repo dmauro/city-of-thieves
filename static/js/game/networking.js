@@ -1,14 +1,11 @@
 (function() {
     var _player_count = 0;
     game.other_players = {};
-    game.nickname = "dmauro"
 
     var _local_host = 'http://127.0.0.1:1428' 
     var _production_host = 'http://dmauro.city-of-thieves.jit.su'
 
-    var _host = (document.location.host === "127.0.0.1:1428") ? _local_host : _production_host;
-
-    console.log("host is", _host);
+    var _host = (document.location.host === "127.0.0.1:1428" || document.location.host === "localhost") ? _local_host : _production_host;
 
     _listen_for_other_players = function() {
         socket.on("player_move", function(data) {

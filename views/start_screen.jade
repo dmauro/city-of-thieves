@@ -7,6 +7,15 @@ html(lang="en")
             title City of Thieves
             meta(name="description", content='An Adventure Time Game Jam Game')
         meta(name="author", content='Michael Rooney, David Mauro and Jen Taclas')
+        link(rel="stylesheet", href="/css/normalize.css")
+        link(rel="stylesheet", href="http://fonts.googleapis.com/css?family=Nothing+You+Could+Do")
+        link(rel="stylesheet", href="/css/start_screen.css")
+        script(src="http://code.jquery.com/jquery-1.8.0.min.js")
     body
-        a(href="/game/")
-            button Click to join an available game
+        .banner
+            form(action="/game/")
+                .input_wrapper
+                    input(type="text", name="nickname", autocomplete="off")
+                button
+
+        script(src="/js/start_screen.js")

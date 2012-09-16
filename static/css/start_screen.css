@@ -1,0 +1,83 @@
+body {
+    background:url(/img/city-bg.jpg) no-repeat center center fixed;
+    -webkit-background-size:cover;
+    -moz-background-size:cover;
+    -o-background-size:cover;
+    background-size:cover;
+}
+
+.banner {
+    position:relative;
+    width:60em;
+    height:72.4em;
+    left:15%;
+    background:url(/img/city-banner.png) no-repeat center center;
+    background-size:100% 100%;
+}
+
+.banner form {
+    display:block;
+    position:absolute;
+    top:48em;
+    left:2em;
+    vertical-align:top;
+}
+
+.input_wrapper {
+    display:inline-block;
+    width:43em;
+    height:3.9em;
+    background:url(/img/thief_name.png) no-repeat center center;
+    background-size:100% 100%;
+    vertical-align:top;
+}
+
+.input_wrapper input {
+    margin-left:6.8em;
+    width:10em;
+    font-size:2.5em;
+    font-family:'Nothing You Could Do', Arial, sans-serif;
+    outline:0;
+    background:transparent;
+    border:0;
+}
+
+.banner button {
+    display:inline-block;
+    width:13.9em;
+    height:4.7em;
+    outline:0;
+    border:0;
+    background:url(/img/play_button.png) no-repeat center bottom;
+    background-size:100% 200%;
+}
+
+.banner button:active {
+    background-position:center top;
+}
+
+@media screen and (max-height: 800px) {
+    body {
+        font-size:9px;
+    }
+}
+@media screen and (max-height: 700px) {
+    body {
+        font-size:8px;
+    }
+}
+@media screen and (max-height: 600px) {
+    body {
+        font-size:7px;
+    }
+}
+@media screen and (max-height: 500px) {
+    body {
+        font-size:6px;
+    }
+}
+@media screen and (max-height: 400px) {
+    body {
+        font-size:5px;
+    }
+}

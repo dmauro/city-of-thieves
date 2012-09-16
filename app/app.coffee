@@ -19,9 +19,10 @@ app.set 'view engine', 'jade'
 app.set 'view options', {layout: false}
 
 app.get "/", (req, res) ->
-    res.render "index"
+    res.render "start_screen"
 
 app.get "/game/", (req, res) ->
+    res.locals.nickname = req.query.nickname
     # Get a lobby to send them to:
     for _, lobby of game.lobbies
         if not lobby.full
@@ -33,7 +34,10 @@ app.get "/game/", (req, res) ->
     res.redirect "/game/#{lobby_id}"
 
 app.get "/game/:id", (req, res) ->
-    res.render "game", { lobby_id : req.params.id }
+    res.render "game", {
+        nickname    : res.locals.nickname
+        lobby_id    : req.params.id
+    }
 
 io = sio.listen app
 game.init io
