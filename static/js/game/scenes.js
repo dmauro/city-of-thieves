@@ -44,8 +44,8 @@ scenes.init = function() {
                                     ai.onDirectionChange(pdx, pdy, ai.dx, ai.dy);
                                 }
                             }
-                            ai.x += ai.dx || 0;
-                            ai.y += ai.dy || 0;
+                            ai.x += (ai.dx || 0) * (ai.speed || 1);
+                            ai.y += (ai.dy || 0) * (ai.speed || 1);
                             game.bound(ai, px, py);
                         });
                     }

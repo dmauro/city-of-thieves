@@ -308,7 +308,7 @@ game.init_players = function() {
     // Send initial coordinates to the server.
     window.player_move(game.player.x, game.player.y);
 
-    game.finn = Crafty.e("2D, DOM, finn1, Bounded, Directional, Guard").Bounded().Directional("finn", true);
+    game.finn = Crafty.e("2D, DOM, finn1, Bounded, Directional, Guard").Bounded().Directional("finn", true).attr({speed: 2});
     game.finn.collision(new Crafty.polygon([[0,0],[64,0],[64,85],[0,85]]))
     game.place_random(game.finn);
     scenes.ais.push(game.finn);
