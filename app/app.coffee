@@ -36,13 +36,13 @@ app.get "/game/", (req, res) ->
     res.redirect "/game/#{lobby_id}"
 
 app.get "/game/:id", (req, res) ->
-    res.render "new_game", {
+    res.render "game", {
         nickname    : _latest_nick
         lobby_id    : req.params.id
     }
 
 app.get "/dev", (req, res) ->
-    res.render "new_game", {
+    res.render "game", {
         nickname    : _latest_nick
         lobby_id    : new Date().getTime()
         dev_mode    : true
