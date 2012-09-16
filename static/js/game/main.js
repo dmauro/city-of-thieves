@@ -272,9 +272,20 @@ game.init_components = function() {
     })
     Crafty.c("Player", {
         init: function() {
+            this.pdx = 0;
+            this.pdy = 0;
+            var player = this;
             this.requires("Collision")
                 .bind('Moved', function(from) {
                     window.player_move(this.x, this.y);
+                })
+                .bind('NewDirection', function(data) {
+                    if (data.x || data.y) {
+                        var x = Math.floor(data.x*2), y = Math.floor(data.y*2); 
+                        player.onDirectionChange(player.pdx, player.pdy, x, y);
+                        player.pdx = x;
+                        player.pdy = y;
+                    }
                 })
                 .onHit('Thief',
                     function(collisions) {
@@ -308,9 +319,10 @@ game.init_players = function() {
 
     });
     //create our player entity with some premade components
-    game.player = Crafty.e("2D, DOM, big-guy1, Thief, LeftControls, Collision, Player, Bounded")
+    game.player = Crafty.e("2D, DOM, big-guy1, Thief, LeftControls, Collision, Directional, Player, Bounded")
             .collision(game.get_collision_poly())
             .leftControls(.5)
+            .Directional("big-guy")
             .Bounded()
 
     game.place_random(game.player, true);
