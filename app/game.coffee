@@ -4,12 +4,14 @@ module.exports.lobbies = _lobbies = {}
 module.exports.players = _players = {}
 _min_players = 1;
 _max_players = 2;
+_game_length = 3 * 60 * 1000;
 
 class Lobby
     constructor: (@id) ->
         @players = []
         @ready = false
         @full = false
+        @is_playing = false
         _lobbies[@id] = @
 
     broadcast: (name, data, is_volatile=false, exclude=null) ->
@@ -71,9 +73,15 @@ class Lobby
         unless @players.length
             delete _lobbies[@id]
 
+    end_game: ->
+        @broadcast 'end_game'
+
     start_game: ->
         for player in @players
             player.start_game()
+        # Set timer for round ending
+        setTimeout @end_game, game_length
+        @is_playing = true
 
 class Player
     constructor: (@socket, @id = new Date().getTime()) ->
