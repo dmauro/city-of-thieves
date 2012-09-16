@@ -4,6 +4,7 @@ game = {
     width: 14,
     state: {},
     players: {},
+    thief_prob: .1, 
 }
 
 game.tiled = function(x) {
@@ -22,7 +23,9 @@ game.place = function(sprite, x, y, z) {
 }
 
 game.create_thief = function(x, y) {
-    return game.place('stone, Collision', x, y, 1).attr({z: y+100});
+    return game.place('stone, Collision, Other', x, y, 1)
+        //.collision(new Crafty.polygon(game.hit_box.slice(0)))
+        .attr({z: y+100});
 }
 game.on_player_moved = function(pid, x, y) {
     if (game.players[pid] === undefined) {
@@ -65,14 +68,34 @@ game.init_components = function() {
             return this;
         },
     });
+    Crafty.c("Other", {
+        init: function() {
+            this.requires("Collision");
+        }
+
+    });
+    Crafty.c("Player", {
+        init: function() {
+            this.requires("Collision")
+                .bind('Moved', function(from) {
+                    window.player_move(this.x, this.y);
+                })
+                .onHit('Other',
+                    function() {
+                        $('body').css({'background-color': 'green'});
+                    },
+                    function() {
+                        $('body').css({'background-color': 'red'});
+                    })
+                ;
+        },
+    });
 };
 
 game.init_players = function() {
     Crafty.c("LeftControls", {
         init: function() {
-            this.requires('Multiway').bind('Moved', function(from) {
-                window.player_move(this.x, this.y);
-            });
+            this.requires('Multiway')
         },
         leftControls: function(speed) {
             this.multiway(speed, {W: -90, S: 90, D: 0, A: 180})
@@ -81,10 +104,12 @@ game.init_players = function() {
 
     });
     //create our player entity with some premade components
-    var player = Crafty.e("2D, DOM, stone, LeftControls, Bounded")
+    var player = Crafty.e("2D, DOM, stone, LeftControls, Collision, Player, Bounded")
+            .collision(new Crafty.polygon(game.hit_box.slice(0)))
             .leftControls(.5)
             .Bounded()
-            .attr({z: 999});
+            .attr({z: 999})
+            ;
     game.iso.place(5, 5, 1, player);
     game.player = player;
 }
@@ -96,7 +121,7 @@ game.generate_world = function() {
             if (!(i == game.width-1 && y % 2)) {
                 game.place('grass', i, y);
             }
-            if (!game.random.range(0, 5)) {
+            if (!game.random.range(0, 1/game.thief_prob)) {
                 scenes.ais.push(game.create_thief(i, y));
             }
 		}
@@ -110,6 +135,9 @@ game.init = function() {
 game.begin = function() {
     game.width_px = game.tiled(game.width);
     game.height_px = game.tiled(game.height/4)+(game.tile_size/4);
+    var tsq = game.tile_size / 8;
+    game.hit_box = [[tsq*3,tsq*3],[tsq*5,tsq*3],[tsq*5,tsq*5],[tsq*3,tsq*5]];
+
     Crafty.init(game.width_px, game.height_px);
 
     game.init_sprites();
