@@ -105,19 +105,27 @@ game.init_components = function() {
     Crafty.c("Thief", {
         init: function() {
             this.treasure = [0];
+            this.requires("Text");
             this.revealed = false;
-            this.stealFrom = function(other) {
-                this.treasure = this.treasure.concat(other.treasure);
-                other.treasure = [];
+            $('#treasure').text(this.treasure.length);
+            this.steal = function() {
+                var other = this.thief_collision;
+                if (other) {
+                    this.treasure = this.treasure.concat(other.treasure);
+                    other.treasure = [];
+                    $('#treasure').text(this.treasure.length);
+                }
             }
             this.reveal = function() {
                 this.revealed = true;
                 this.css("opacity", "0.5");
+                this.text(""+this.treasure.length);
 
             }
             this.conceal = function() {
                 this.revealed = false;
                 this.css("opacity", "1");
+                this.text(' ');
             }
         }
 
@@ -160,9 +168,9 @@ game.init_components = function() {
                             var first = collisions[0].obj;
                             if (!first.revealed) {
                                 if (this.thief_collision) { this.thief_collision.conceal(); }
-                                first.reveal();
                                 this.thief_collision = first;
                             }
+                            first.reveal();
                         }
                     },
                     function() {

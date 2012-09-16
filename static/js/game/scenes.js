@@ -52,7 +52,7 @@ scenes.init = function() {
                 });
                 scenes.bind('KeyDown', function (e) {
                     if (e.key == Crafty.keys['SPACE']) {
-                        //game.player.shoot();
+                        game.player.steal();
                     }
                 });
             }, 1000);
