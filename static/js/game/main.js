@@ -94,6 +94,11 @@ game.init_scenes = function() {
 game.bound = function(e, px, py) {
     if (e.hit('solid') || e.x <= 0 || e.y < -(game.tile_size/2) || e.x > game.width_px - game.tile_size/2 || e.y > game.height_px - game.tile_size) {
         e.attr({x: px, y: py});
+        e.dx *= -1;
+        e.dy *= -1;
+        if (e.onDirectionChange) {
+            e.onDirectionChange(e.dx*-1, e.dy*-1, e.dx, e.dy);
+        }
     }
     e.attr({z: e.y+100});
 }
