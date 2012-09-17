@@ -81,7 +81,14 @@ game.on_player_thieved = function(data) {
     setTimeout(function() {
         from.dx = 0;
         from.dy = 0;
+        from.frozen = true;
         Crafty.audio.play(game.random.choice(game.reactions));
+        var element = $('<div style="margin-top:-20px;z-index:2;font-size:3em;background-color:#fff;opacity:.5;border-radius:10px;">!!!</div>');
+        $(from._element).append(element);
+        setTimeout(function() {
+            element.remove();
+            from.frozen = false;
+        }, 2000);
     }, 3000);
     Crafty.audio.play("bells");
 }
@@ -403,5 +410,5 @@ game.begin = function(pid) {
     // Handle events we get before the game state is initialized.
     game.begun = true;
     $.each(game.when_ready, function(i, el) { el(); });
-    Crafty.audio.play("welcome");
+    //Crafty.audio.play("welcome");
 }

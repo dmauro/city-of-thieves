@@ -33,6 +33,7 @@ scenes.init = function() {
                     if (frame % 2 === 0) {
                         scene.ticks += 1
                         $.each(scenes.ais, function(i, ai) {
+                            if (ai.frozen) { return; }
                             px = ai.x;
                             py = ai.y;
                             if (!game.random.range(0, 30)) {
