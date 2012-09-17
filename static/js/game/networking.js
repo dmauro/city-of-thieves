@@ -12,7 +12,7 @@
             game.on_player_moved(data.id, data.x, data.y);
         });
         socket.on("player_steal", function(data) {
-            game.on_player_thieved(data.id);
+            game.on_player_thieved(data.target);
         });
     }
 

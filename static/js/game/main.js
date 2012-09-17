@@ -70,9 +70,17 @@ game.on_player_moved = function(pid, x, y) {
     }
 }
 
-game.on_player_thieved = function(tid) {
-    console.log('thieved', tid);
-    console.log(self.thieves[tid]);
+game.on_player_thieved = function(data) {
+    console.log(data);
+    console.log(data[0], data[1]);
+    var to = game.thieves[data[0]];
+    var from = game.thieves[data[1]];
+    to.treasure = to.treasure.concat(from.treasure);
+    from.treasure = [];
+    if (data[0] == game.pid) {
+        $('#treasure').text(to.treasure.length);
+    }
+    Crafty.audio.play("bells");
 }
 
 game.init_sprites = function() {
@@ -94,6 +102,7 @@ game.init_sprites = function() {
         Crafty.sprite(1, "/img/sprite-"+prefix+".png", map);
     }
     sprite("doll-finn");
+    sprite("doll-jake");
     sprite("big-guy");
 }
 
@@ -136,13 +145,9 @@ game.init_components = function() {
             this.steal = function() {
                 var other = this.thief_collision;
                 if (other && other.treasure.length) {
-                    this.treasure = this.treasure.concat(other.treasure);
-                    other.treasure = [];
-                    $('#treasure').text(this.treasure.length);
-                    Crafty.audio.play("bells");
                     $.each(game.thieves, function(id, thief) {
                         if (thief == other) {
-                            window.player_steal(id);
+                            window.player_steal([game.pid, id]);
                             return false;
                         }
                     });
@@ -343,7 +348,7 @@ game.init_players = function() {
     window.player_move(game.player.x, game.player.y);
 
     var mk_guard = function(name) {
-        var guard = Crafty.e("2D, DOM, doll-finn1, Bounded, Directional, Guard").Bounded().Directional(name, true)
+        var guard = Crafty.e("2D, DOM, doll-"+name+"1, Bounded, Directional, Guard").Bounded().Directional(name, true)
             .attr({speed: 2})
             .collision(new Crafty.polygon([[0,0],[65,0],[65,105],[0,105]]));
         game.place_random(guard);
@@ -351,7 +356,7 @@ game.init_players = function() {
         game.guards.push(guard);
     }
     mk_guard("doll-finn");
-    mk_guard("doll-finn");
+    mk_guard("doll-jake");
 }
 
 game.generate_world = function() {
