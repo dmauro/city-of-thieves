@@ -48,7 +48,7 @@ game.place_random = function(e, noalea) {
 }
 
 game.create_thief = function(x, y) {
-    return game.place('big-guy1, Thief, Collision, Other, Directional', x, y, 1).Directional("big-guy")
+    return game.place('doll-bigguy1, Thief, Collision, Other, Directional', x, y, 1).Directional("doll-bigguy")
         .collision(game.get_collision_poly())
         .attr({z: y+100});
 }
@@ -83,8 +83,9 @@ game.on_player_thieved = function(data) {
         from.dy = 0;
         from.frozen = true;
         Crafty.audio.play(game.random.choice(game.reactions));
-        var element = $('<div style="margin-top:-20px;z-index:2;font-size:3em;background-color:#fff;opacity:.5;border-radius:10px;">!!!</div>');
-        $(from._element).append(element);
+        var element = $('<div style="position:absolute;z-index:2;font-size:3em;background-color:#fff;opacity:.5;border-radius:10px;">!!!</div>');
+        element.css('top', from.y).css('left', from.x);
+        $('#cr-stage').append(element);
         setTimeout(function() {
             element.remove();
             from.frozen = false;
@@ -97,12 +98,12 @@ game.init_sprites = function() {
     var sprite = function(prefix) {
         var dirs = [
             [1, [130,0]],
-            [2, [195,105]],
+            [2, [195,106]],
             [3, [195,0]],
-            [4, [130,105]],
-            [6, [65,105]],
+            [4, [130,106]],
+            [6, [65,106]],
             [7, [65,0]],
-            [8, [0,105]],
+            [8, [0,106]],
             [9, [0,0]]
         ]
         var map = {};
@@ -113,7 +114,7 @@ game.init_sprites = function() {
     }
     sprite("doll-finn");
     sprite("doll-jake");
-    sprite("big-guy");
+    sprite("doll-bigguy");
 }
 
 game.init_sounds = function() {
@@ -173,7 +174,7 @@ game.init_components = function() {
             this.reveal = function() {
                 this.revealed = true;
                 this.css("opacity", "0.5");
-                this.gem.css('display', 'block').css('top', this.y+15).css('left', this.x+10);
+                this.gem.css('display', 'block').css('top', this.y+15).css('left', this.x+15);
                 this.text(""+this.treasure.length);
 
             }
@@ -355,10 +356,10 @@ game.init_players = function() {
 
     });
     //create our player entity with some premade components
-    game.player = Crafty.e("2D, DOM, big-guy1, Thief, LeftControls, Collision, Directional, Player, Bounded")
+    game.player = Crafty.e("2D, DOM, doll-bigguy1, Thief, LeftControls, Collision, Directional, Player, Bounded")
             .collision(game.get_collision_poly())
             .leftControls(.5)
-            .Directional("big-guy")
+            .Directional("doll-bigguy")
             .Bounded()
     game.thieves[game.pid] = game.player;
 
