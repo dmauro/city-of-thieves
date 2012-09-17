@@ -111,6 +111,7 @@ game.init_sprites = function() {
 
 game.init_sounds = function() {
     Crafty.audio.add("bells", "/sfx/bells.mp3");
+    Crafty.audio.add("welcome", "/sfx/purification-chamber.mp3");
     game.reactions = ["basket", "body", "crossbow", "glasses", "jammies"];
     $.each(game.reactions, function(i, reaction) {
         Crafty.audio.add(reaction, "/sfx/my-"+reaction+".mp3");
@@ -402,4 +403,5 @@ game.begin = function(pid) {
     // Handle events we get before the game state is initialized.
     game.begun = true;
     $.each(game.when_ready, function(i, el) { el(); });
+    Crafty.audio.play("welcome");
 }
