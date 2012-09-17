@@ -53,6 +53,7 @@ class Lobby
             player_count    : @players.length
             other_players   : other_players
             your_nick       : player.nickname
+            your_id         : player.id
         }
         if @players.length >= _min_players and not @ready
             @ready = true
