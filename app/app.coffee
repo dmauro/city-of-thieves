@@ -52,8 +52,9 @@ io = sio.listen app
 game.init io
 
 if process.env.NODE_ENV is "development"
-    port = 8080
-    app.listen port
+    port = 1428
+    ip = "127.0.0.1"
+    app.listen port, ip
     console.log "Server is running at http://#{ip}:#{port}"
 else if process.env.NODE_ENV is "production"
     port = 8080
