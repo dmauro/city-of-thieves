@@ -156,6 +156,8 @@ game.init_components = function() {
             this.treasure = [0];
             this.requires("Text");
             this.revealed = false;
+            this.gem = $('<img src="/img/gem.png" style="position:absolute;display:none"/>');
+            $("#cr-stage").append(this.gem);
             $('#treasure').text(this.treasure.length);
             this.steal = function() {
                 var other = this.thief_collision;
@@ -171,12 +173,14 @@ game.init_components = function() {
             this.reveal = function() {
                 this.revealed = true;
                 this.css("opacity", "0.5");
+                this.gem.css('display', 'block').css('top', this.y+15).css('left', this.x+10);
                 this.text(""+this.treasure.length);
 
             }
             this.conceal = function() {
                 this.revealed = false;
                 this.css("opacity", "1");
+                this.gem.css('display', 'none')
                 this.text(' ');
             }
         }
