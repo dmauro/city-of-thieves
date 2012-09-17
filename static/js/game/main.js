@@ -6,7 +6,7 @@ game = {
     players: {},
     guards: [],
     thieves: {},
-    thief_prob: .1, 
+    thief_prob: .25, 
     begun: false,
     when_ready: [],
 }
