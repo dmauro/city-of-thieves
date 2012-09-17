@@ -16,9 +16,12 @@
             lobby   : $('#lobby'),
             game    : $('#game'),
             players : $('#lobby .player_list ul'),
+            start   : $('#lobby .start'),
             waiting : $('#lobby .start .waiting'),
             ready   : $('#lobby .start .ready'),
-            share   : $('#lobby .start input')
+            share   : $('#lobby .start input'),
+            summary : $('#lobby .summary'),
+            snail   : $('#lobby .snail'),
         };
         lobby.nodes.share.val(document.location.href);
     };
@@ -59,5 +62,21 @@
     lobby.game_summary = function() {
         lobby.nodes.game.hide();
         lobby.nodes.lobby.show();
+        lobby.nodes.start.hide();
+        lobby.nodes.summary.show();
+        // Show winner
+        var high_score = -Infinity;
+        var high_player = null;
+        $.each(game.thieves, function(id, thief) {
+            if (thief.treasure.length > high_score) {
+                high_score = thief.treasure.length;
+                // Assume it's you if they aren't in other players.
+                high_player = (game.other_players[id]) ? game.other_players[id].nickname : game.nickname;
+            }
+        });
+        lobby.nodes.snail.append('<p>' + high_player + ' - ' + high_score + 'pts</p>');
+        setTimeout(function() {
+            document.location.reload();
+        }, 5 * 1000);
     };
 })();

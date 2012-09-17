@@ -84,6 +84,29 @@ body {
     -moz-box-shadow:inset 1px 1px 2px rgba(0,0,0, 0.3);
 }
 
+#lobby .summary {
+    display:none;
+    width:297px;
+    margin:0 auto;
+}
+
+#lobby .snail {
+    position:relative;
+    width:297px;
+    height:326px;
+    background:url(/img/snail-banner.png);
+}
+
+#lobby .snail p {
+    position:absolute;
+    width:200px;
+    left:40px;
+    top:20px;
+    font-family:'Nothing You Could Do', Arial, sans-serif;
+    font-size:2.5em;
+
+}
+
 #game {
     display:none;
     position:fixed;
