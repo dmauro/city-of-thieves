@@ -71,8 +71,6 @@ game.on_player_moved = function(pid, x, y) {
 }
 
 game.on_player_thieved = function(data) {
-    console.log(data);
-    console.log(data[0], data[1]);
     var to = game.thieves[data[0]];
     var from = game.thieves[data[1]];
     to.treasure = to.treasure.concat(from.treasure);
@@ -80,6 +78,11 @@ game.on_player_thieved = function(data) {
     if (data[0] == game.pid) {
         $('#treasure').text(to.treasure.length);
     }
+    setTimeout(function() {
+        from.dx = 0;
+        from.dy = 0;
+        Crafty.audio.play(game.random.choice(game.reactions));
+    }, 3000);
     Crafty.audio.play("bells");
 }
 
@@ -108,6 +111,10 @@ game.init_sprites = function() {
 
 game.init_sounds = function() {
     Crafty.audio.add("bells", "/sfx/bells.mp3");
+    game.reactions = ["basket", "body", "crossbow", "glasses", "jammies"];
+    $.each(game.reactions, function(i, reaction) {
+        Crafty.audio.add(reaction, "/sfx/my-"+reaction+".mp3");
+    });
 }
 
 game.init_scenes = function() {
