@@ -29,7 +29,7 @@ class Lobby
 
     add_player: (player) ->
         # Make sure their nickname is available
-        i = 0
+        i = 1
         test_name = player.nickname
         while true
             name_available = true

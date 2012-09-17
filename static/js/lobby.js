@@ -23,7 +23,7 @@
             summary : $('#lobby .summary'),
             snail   : $('#lobby .snail'),
         };
-        lobby.nodes.share.val(document.location.href);
+        lobby.nodes.share.val(window.location.href.split('?')[0]);
     };
     $(function() {
         lobby.init();
