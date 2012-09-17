@@ -108,7 +108,7 @@ class Player
             @lobby.broadcast 'player_move', data, true, @id
         @socket.on 'player_steal', (data) =>
             data['id'] = @id
-            @lobby.broadcast 'player_steal', data, true, @id
+            @lobby.broadcast 'player_steal', data
         @socket.on 'set_nickname', (data) =>
             @nickname = data.nickname
         @socket.emit 'connection_established'
