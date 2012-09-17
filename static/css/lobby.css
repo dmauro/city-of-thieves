@@ -182,3 +182,21 @@ body {
     font-size: 3em;
     padding-top: 27px;
 }
+
+#countdown,
+#treasure {
+    position:absolute;
+    top:20px;
+    left:20px;
+    font-size:4em;
+    font-weight:bold;
+    color:yellow;
+    text-shadow:0 3px 0 #FF4700;
+    text-align:center;
+    z-index:1;
+}
+
+#treasure {
+    left:auto;
+    right:20px;
+}

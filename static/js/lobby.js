@@ -77,6 +77,9 @@
         lobby.nodes.snail.append('<p>' + high_player + ' - ' + high_score + 'pts</p>');
         setTimeout(function() {
             document.location.reload();
-        }, 5 * 1000);
+        }, 10 * 1000);
+        var audio = $('<audio><source src="/sfx/score-board.mp3" type="audio/mp3"></audio>');
+        $('body').append(audio);
+        audio[0].play();
     };
 })();

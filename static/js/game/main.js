@@ -80,7 +80,7 @@ game.on_player_thieved = function(data) {
     to.treasure = to.treasure.concat(from.treasure);
     from.treasure = [];
     if (data[0] == game.pid) {
-        $('#treasure').text(to.treasure.length);
+        $('#treasure').text('Treasure: ' + to.treasure.length);
     }
     setTimeout(function() {
         from.dx = 0;
@@ -163,7 +163,7 @@ game.init_components = function() {
             this.revealed = false;
             this.gem = $('<img src="/img/gem.png" style="position:absolute;display:none"/>');
             $("#cr-stage").append(this.gem);
-            $('#treasure').text(this.treasure.length);
+            $('#treasure').text('Treasure: ' + this.treasure.length);
             this.steal = function() {
                 var other = this.thief_collision;
                 if (other && other.treasure.length) {
@@ -401,6 +401,14 @@ game.init = function() {
     socket_connect();
 }
 
+game.init_timer = function() {
+    var count_timer = $('#countdown');
+    count_timer.text(90);
+    setInterval(function() {
+        count_timer.text(parseInt(count_timer.text(), 10)-1);
+    }, 1000);
+};
+
 game.begin = function(pid) {
     game.width_px = 960;
     game.height_px = 592;
@@ -413,12 +421,10 @@ game.begin = function(pid) {
 
     Crafty.scene("main");
 
-    setInterval(function() {
-        $("#timer").text(parseInt($("#timer").text())-1);
-    }, 1000)
+    game.init_timer();
 
     // Handle events we get before the game state is initialized.
     game.begun = true;
     $.each(game.when_ready, function(i, el) { el(); });
-    //Crafty.audio.play("welcome");
+    Crafty.audio.play("welcome");
 }

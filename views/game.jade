@@ -52,17 +52,8 @@ html(lang="en")
                         img(src="/img/game-bg-right.png")
                     .bottom
                         img(src="/img/game-bg-bottom.png")
-            .controls
-                b
-                    div Timer:
-                        span#timer 300
-                    div Treasure:
-                        span#treasure
-                br
-                WASD: movement
-                br
-                Space: steal
-                br
+                #countdown
+                #treasure
 
         -if (typeof(lobby_id) != 'undefined')
             script

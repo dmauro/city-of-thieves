@@ -4,7 +4,7 @@ module.exports.lobbies = _lobbies = {}
 module.exports.players = _players = {}
 _min_players = 1;
 _max_players = 4;
-_game_length = 3 * 60 * 1000;
+_game_length = 1.5 * 60 * 1000;
 
 class Lobby
     constructor: (@id) ->
