@@ -13,7 +13,7 @@ app.configure(->
     app.use express.logger()
     app.use express.bodyParser()
     app.use app.router
-    app.use express.static "#{cwd}/static", { maxAge: 1000*60 }
+    app.use express.static "#{cwd}/static", { maxAge: 5*60*1000 }
 )
 app.set 'view engine', 'jade'
 app.set 'view options', {layout: false}
