@@ -12,6 +12,8 @@ app = express.createServer()
 app.configure(->
     app.use express.logger()
     app.use express.bodyParser()
+    app.use express.cookieParser()
+    app.use express.session { secret : 'city-of-thieves-yeah' }
     app.use app.router
     app.use express.static "#{cwd}/static", { maxAge: 5*60*1000 }
 )
@@ -21,10 +23,8 @@ app.set 'view options', {layout: false}
 app.get "/", (req, res) ->
     res.render "start_screen"
 
-_latest_nick = null;
-
 app.get "/game/", (req, res) ->
-    _latest_nick = req.query.nickname or null
+    req.session.nickname = req.query.nickname or null
     # Get a lobby to send them to:
     for _, lobby of game.lobbies
         unless lobby.full or lobby.is_playing
@@ -37,7 +37,7 @@ app.get "/game/", (req, res) ->
 
 app.get "/game/:id", (req, res) ->
     res.render "game", {
-        nickname    : _latest_nick
+        nickname    : req.session.nickname or null
         lobby_id    : req.params.id
     }
 

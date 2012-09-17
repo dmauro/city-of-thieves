@@ -3,7 +3,7 @@
 module.exports.lobbies = _lobbies = {}
 module.exports.players = _players = {}
 _min_players = 1;
-_max_players = 4;
+_max_players = 6;
 _game_length = 1.5 * 60 * 1000;
 
 class Lobby
@@ -29,16 +29,18 @@ class Lobby
 
     add_player: (player) ->
         # Make sure their nickname is available
-        i = 1
+        i = 0
+        test_name = player.nickname
         while true
             name_available = true
             for _player in @players
-                name_available = false if _player.nickname is player.nickname
+                name_available = false if _player.nickname is test_name
             if name_available
                 break
             else
-                player.nickname = player.nickname + "_" + i
+                test_name = player.nickname + "_" + i
             i++
+        player.nickname = test_name;
 
         @broadcast 'player_added', player.get_stub();
         other_players = {}
