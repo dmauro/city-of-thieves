@@ -90,7 +90,7 @@ game.init_sprites = function() {
 }
 
 game.init_sounds = function() {
-    //Crafty.audio.add("shoot", "sound/shoot.wav");
+    Crafty.audio.add("bells", "/sfx/bells.mp3");
 }
 
 game.init_scenes = function() {
@@ -127,10 +127,11 @@ game.init_components = function() {
             $('#treasure').text(this.treasure.length);
             this.steal = function() {
                 var other = this.thief_collision;
-                if (other) {
+                if (other && other.treasure.length) {
                     this.treasure = this.treasure.concat(other.treasure);
                     other.treasure = [];
                     $('#treasure').text(this.treasure.length);
+                    Crafty.audio.play("bells");
                 }
             }
             this.reveal = function() {
