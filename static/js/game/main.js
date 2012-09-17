@@ -70,22 +70,22 @@ game.on_player_moved = function(pid, x, y) {
 game.init_sprites = function() {
     var sprite = function(prefix) {
         var dirs = [
-            [1, [128,0]],
-            [2, [196,85]],
-            [3, [196,0]],
-            [4, [128,85]],
-            [6, [64,85]],
-            [7, [64,0]],
-            [8, [0,85]],
+            [1, [130,0]],
+            [2, [195,105]],
+            [3, [195,0]],
+            [4, [130,105]],
+            [6, [65,105]],
+            [7, [65,0]],
+            [8, [0,105]],
             [9, [0,0]]
         ]
         var map = {};
         $.each(dirs, function(i, dir) {
-            map[prefix+dir[0]] = dir[1].concat([64,85]);
+            map[prefix+dir[0]] = dir[1].concat([65,105]);
         })
         Crafty.sprite(1, "/img/sprite-"+prefix+".png", map);
     }
-    sprite("finn");
+    sprite("doll-finn");
     sprite("big-guy");
 }
 
@@ -327,15 +327,15 @@ game.init_players = function() {
     window.player_move(game.player.x, game.player.y);
 
     var mk_guard = function(name) {
-        var guard = Crafty.e("2D, DOM, finn1, Bounded, Directional, Guard").Bounded().Directional(name, true)
+        var guard = Crafty.e("2D, DOM, doll-finn1, Bounded, Directional, Guard").Bounded().Directional(name, true)
             .attr({speed: 2})
-            .collision(new Crafty.polygon([[0,0],[64,0],[64,85],[0,85]]));
+            .collision(new Crafty.polygon([[0,0],[65,0],[65,105],[0,105]]));
         game.place_random(guard);
         scenes.ais.push(guard);
         game.guards.push(guard);
     }
-    mk_guard("finn");
-    mk_guard("finn");
+    mk_guard("doll-finn");
+    mk_guard("doll-finn");
 }
 
 game.generate_world = function() {
