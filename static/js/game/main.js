@@ -5,6 +5,7 @@ game = {
     state: {},
     players: {},
     guards: [],
+    thieves: {},
     thief_prob: .1, 
     begun: false,
     when_ready: [],

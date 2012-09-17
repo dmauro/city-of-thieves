@@ -13,6 +13,7 @@
         });
         socket.on("player_steal", function(data) {
             var player = game.other_players[data.id];
+            game.on_player_thieved(data.id);
             // This player is trying to steal from data.target
         });
     }
