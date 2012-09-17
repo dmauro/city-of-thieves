@@ -100,7 +100,11 @@ body {
 }
 
 #game .controls {
-    display:none;
+    width: 100%;
+    text-align: center;
+    font-size: 2em;
+    z-index: 1;
+    color: #fff;
 }
 
 #game_wrapper {

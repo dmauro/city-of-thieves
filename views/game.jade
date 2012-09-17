@@ -42,18 +42,6 @@ html(lang="en")
                 #container(style="width:960px;margin:auto;text-align:center;")
                     #hud
                     #cr-stage(style="width:960px;height:592px;")
-                        h1 What Time Is It?
-                        div click to start
-                    .controls
-                        b
-                            u Controls
-                            div Treasure:
-                                span#treasure
-                        br
-                        WASD: movement
-                        br
-                        Space: steal
-                        br
                 #game_foreground
                     .left
                         img(src="/img/game-bg-left.png")
@@ -61,6 +49,17 @@ html(lang="en")
                         img(src="/img/game-bg-right.png")
                     .bottom
                         img(src="/img/game-bg-bottom.png")
+            .controls
+                b
+                    div Timer:
+                        span#timer 300
+                    div Treasure:
+                        span#treasure
+                br
+                WASD: movement
+                br
+                Space: steal
+                br
 
         -if (typeof(lobby_id) != 'undefined')
             script

@@ -365,6 +365,10 @@ game.begin = function() {
 
     Crafty.scene("main");
 
+    setInterval(function() {
+        $("#timer").text(parseInt($("#timer").text())-1);
+    }, 1000)
+
     // Handle events we get before the game state is initialized.
     game.begun = true;
     $.each(game.when_ready, function(i, el) { el(); });
