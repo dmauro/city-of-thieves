@@ -52,14 +52,18 @@ game.create_thief = function(x, y) {
         .collision(game.get_collision_poly())
         .attr({z: y+100});
 }
-game.on_player_moved = function(pid, x, y) {
+game.on_player_moved = function(pid, x, y, sprite) {
     var handle = function() {
         if (game.players[pid] === undefined) {
             var thief = game.create_thief(x, y);
             game.players[pid] = thief
             game.thieves[pid] = thief
         }
-        game.players[pid].attr({x: x, y: y, z: y+100});
+        if (game.players[pid].psprite) {
+            game.players[pid].removeComponent(game.players[pid].psprite);
+        }
+        game.players[pid].attr({x: x, y: y, z: y+100}).addComponent(sprite);
+        game.players[pid].psprite = sprite;
     }
 
     // This may be called before we initialize, since everyone starts at once.
@@ -206,6 +210,7 @@ game.init_components = function() {
                         e.removeComponent(psprite);
                     }
                     e.addComponent(nsprite);
+                    e.csprite = nsprite;
                 }
 
                 /*
@@ -314,7 +319,7 @@ game.init_components = function() {
             var player = this;
             this.requires("Collision")
                 .bind('Moved', function(from) {
-                    window.player_move(this.x, this.y);
+                    window.player_move(this.x, this.y, this.csprite);
                 })
                 .bind('NewDirection', function(data) {
                     if (data.x || data.y) {
@@ -365,7 +370,7 @@ game.init_players = function() {
 
     game.place_random(game.player, true);
     // Send initial coordinates to the server.
-    window.player_move(game.player.x, game.player.y);
+    window.player_move(game.player.x, game.player.y, game.player.csprite);
 
     var mk_guard = function(name) {
         var guard = Crafty.e("2D, DOM, doll-"+name+"1, Bounded, Directional, Guard").Bounded().Directional(name, true)

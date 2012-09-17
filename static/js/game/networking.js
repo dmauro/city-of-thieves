@@ -9,7 +9,7 @@
 
     _listen_for_other_players = function() {
         socket.on("player_move", function(data) {
-            game.on_player_moved(data.id, data.x, data.y);
+            game.on_player_moved(data.id, data.x, data.y, data.sprite);
         });
         socket.on("player_steal", function(data) {
             game.on_player_thieved(data.target);
@@ -75,10 +75,11 @@
         });
     }
 
-    window.player_move = function(x, y) {
+    window.player_move = function(x, y, sprite) {
         socket.emit("player_move", {
             x : x,
-            y : y
+            y : y,
+            sprite: sprite,
         });
     };
 
