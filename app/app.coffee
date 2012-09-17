@@ -57,6 +57,6 @@ if process.env.NODE_ENV is "development"
     app.listen port, ip
     console.log "Server is running at http://#{ip}:#{port}"
 else if process.env.NODE_ENV is "production"
-    port = 8080
+    port = 80
     app.listen port
     console.log "Server is running in production."
