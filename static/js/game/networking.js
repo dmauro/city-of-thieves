@@ -12,9 +12,7 @@
             game.on_player_moved(data.id, data.x, data.y);
         });
         socket.on("player_steal", function(data) {
-            var player = game.other_players[data.id];
             game.on_player_thieved(data.id);
-            // This player is trying to steal from data.target
         });
     }
 
@@ -45,6 +43,7 @@
             socket.on("added_to_lobby", function(data) {
                 game.nickname = data.your_nick;
                 _player_count = data.player_count;
+                game.pid = data.your_id;
                 game.other_players = data.other_players;
                 lobby.set_players(game.other_players);
                 console.log("WE ARE IN A LOBBY", data.id, " WITH X PLAYERS", data.player_count, data);

@@ -55,7 +55,9 @@ game.create_thief = function(x, y) {
 game.on_player_moved = function(pid, x, y) {
     var handle = function() {
         if (game.players[pid] === undefined) {
-            game.players[pid] = game.create_thief(x, y);
+            var thief = game.create_thief(x, y);
+            game.players[pid] = thief
+            game.thieves[pid] = thief
         }
         game.players[pid].attr({x: x, y: y, z: y+100});
     }
@@ -66,6 +68,11 @@ game.on_player_moved = function(pid, x, y) {
     } else {
         game.when_ready.push(handle);
     }
+}
+
+game.on_player_thieved = function(tid) {
+    console.log('thieved', tid);
+    console.log(self.thieves[tid]);
 }
 
 game.init_sprites = function() {
@@ -133,6 +140,12 @@ game.init_components = function() {
                     other.treasure = [];
                     $('#treasure').text(this.treasure.length);
                     Crafty.audio.play("bells");
+                    $.each(game.thieves, function(id, thief) {
+                        if (thief == other) {
+                            window.player_steal(id);
+                            return false;
+                        }
+                    });
                 }
             }
             this.reveal = function() {
@@ -323,6 +336,7 @@ game.init_players = function() {
             .leftControls(.5)
             .Directional("big-guy")
             .Bounded()
+    game.thieves[game.pid] = game.player;
 
     game.place_random(game.player, true);
     // Send initial coordinates to the server.
@@ -345,7 +359,9 @@ game.generate_world = function() {
 	for(var i = game.width-1; i >= 0; i--) {
 		for(var y = 0; y < game.height; y++) {
             if (i >1 && !game.random.range(0, 1/game.thief_prob)) {
-                scenes.ais.push(game.create_thief(i, y));
+                var thief = game.create_thief(i, y);
+                scenes.ais.push(thief);
+                game.thieves[scenes.ais.length] = thief;
             }
 		}
 	}
@@ -355,7 +371,7 @@ game.init = function() {
     socket_connect();
 }
 
-game.begin = function() {
+game.begin = function(pid) {
     game.width_px = 960;
     game.height_px = 592;
     Crafty.init(game.width_px, game.height_px);
